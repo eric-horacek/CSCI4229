@@ -18,7 +18,8 @@
     return (MSScene*) cc3Scene;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
     [super dealloc];
 }
 
@@ -27,7 +28,7 @@
 //
 // For more info, read the notes of this method on CC3Layer.
 //
--(void) initializeControls
+- (void)initializeControls
 {
     
 }
@@ -40,7 +41,8 @@
 //
 // For more info, read the notes of this method on CC3Layer.
 //
--(void) onOpenCC3Layer {
+- (void)onOpenCC3Layer
+{
 
 	// Register for tap gestures to select 3D nodes.
 	UITapGestureRecognizer* tapSelector = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(handleTapSelection:)];
@@ -58,18 +60,20 @@
 }
 
 
-- (void)handleTapSelection: (UITapGestureRecognizer*) gesture {
+- (void)handleTapSelection:(UITapGestureRecognizer*)gesture
+{
     
 	// Once the gesture has ended, convert the UI location to a 2D node location and
 	// pick the 3D node under that location. Don't forget to test that the gesture is
 	// valid and does not conflict with touches handled by this layer or its descendants.
-	if ([self cc3ValidateGesture: gesture] && (gesture.state == UIGestureRecognizerStateEnded) ) {
+	if ([self cc3ValidateGesture: gesture] && (gesture.state == UIGestureRecognizerStateEnded)) {
 		CGPoint touchPoint = [self cc3ConvertUIPointToNodeSpace: gesture.location];
 		[self.scene pickNodeFromTapAt:touchPoint];
 	}
 }
 
-- (void)handleDrag:(UIPanGestureRecognizer*) gesture {
+- (void)handleDrag:(UIPanGestureRecognizer*) gesture
+{
 	switch (gesture.state) {
 		case UIGestureRecognizerStateBegan:
 			if ([self cc3ValidateGesture: gesture]) {
@@ -92,6 +96,8 @@
 //
 // For more info, read the notes of this method on CC3Layer.
 //
--(void) onCloseCC3Layer {}
+- (void)onCloseCC3Layer
+{
+}
 
 @end

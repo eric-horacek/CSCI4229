@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A3E1D001678F8F7006FD145 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A3E1CFF1678F8F7006FD145 /* Default-568h@2x.png */; };
+		3A5EF96D1678FC760029BB6A /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A5EF96C1678FC760029BB6A /* fire.png */; };
 		91203CBB16782B29004DC51F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBA16782B29004DC51F /* QuartzCore.framework */; };
 		91203CBD16782B29004DC51F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBC16782B29004DC51F /* OpenGLES.framework */; };
 		91203CBF16782B29004DC51F /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBE16782B29004DC51F /* OpenAL.framework */; };
@@ -201,7 +203,6 @@
 		91B0F3101678EC3400647DE6 /* ZFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F2431678EC3400647DE6 /* ZFont.m */; };
 		91B0F3141678EC3400647DE6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F2471678EC3400647DE6 /* main.m */; };
 		91B0F3191678EC3400647DE6 /* fps_images.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F24E1678EC3400647DE6 /* fps_images.png */; };
-		91B0F3211678EC3400647DE6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F2561678EC3400647DE6 /* Info.plist */; };
 		91B0F3231678EC3400647DE6 /* Robot.pod in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F2581678EC3400647DE6 /* Robot.pod */; };
 		91B0F3301678ED4400647DE6 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F3261678ED4400647DE6 /* Icon-72.png */; };
 		91B0F3311678ED4400647DE6 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F3271678ED4400647DE6 /* Icon-72@2x.png */; };
@@ -216,6 +217,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A3E1CFF1678F8F7006FD145 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		3A5EF96C1678FC760029BB6A /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fire.png; sourceTree = "<group>"; };
 		91203CB616782B29004DC51F /* CSCI4229.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CSCI4229.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91203CBA16782B29004DC51F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		91203CBC16782B29004DC51F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1324,6 +1327,7 @@
 				91B0F2471678EC3400647DE6 /* main.m */,
 				91B0F2481678EC3400647DE6 /* Prefix.pch */,
 				91B0F2561678EC3400647DE6 /* Info.plist */,
+				3A3E1CFF1678F8F7006FD145 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1349,6 +1353,7 @@
 			isa = PBXGroup;
 			children = (
 				91B0F17B1678EC3400647DE6 /* Grass.jpg */,
+				3A5EF96C1678FC760029BB6A /* fire.png */,
 			);
 			name = Textures;
 			sourceTree = "<group>";
@@ -1422,7 +1427,6 @@
 				91B0F26E1678EC3400647DE6 /* PVRT_Removed_Files.txt in Resources */,
 				91B0F2B71678EC3400647DE6 /* Grass.jpg in Resources */,
 				91B0F3191678EC3400647DE6 /* fps_images.png in Resources */,
-				91B0F3211678EC3400647DE6 /* Info.plist in Resources */,
 				91B0F3231678EC3400647DE6 /* Robot.pod in Resources */,
 				91B0F3301678ED4400647DE6 /* Icon-72.png in Resources */,
 				91B0F3311678ED4400647DE6 /* Icon-72@2x.png in Resources */,
@@ -1434,6 +1438,8 @@
 				91B0F3371678ED4400647DE6 /* Icon@2x.png in Resources */,
 				91B0F3381678ED4400647DE6 /* iTunesArtwork.png in Resources */,
 				91B0F3391678ED4400647DE6 /* iTunesArtwork@2x.png in Resources */,
+				3A3E1D001678F8F7006FD145 /* Default-568h@2x.png in Resources */,
+				3A5EF96D1678FC760029BB6A /* fire.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1697,7 +1703,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Devon Tivona (KZR69S9RCQ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Eric Horacek (VYB2MA7NV4)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

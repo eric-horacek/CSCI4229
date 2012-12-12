@@ -21,6 +21,8 @@
 #import "CC3ShadowVolumes.h"
 #import "CC3VertexArrays.h"
 
+#define DEBUG3D
+
 @interface MSScene ()
 
 @property (nonatomic, assign) CC3Vector cameraStartDirection;
@@ -36,12 +38,13 @@
 
 #pragma mark - Scene Lifecycle
 
-- (void)dealloc {
+- (void)dealloc
+{
 	[super dealloc];
 }
 
-- (void)initializeScene {
-    
+- (void)initializeScene
+{
     self.ambientLight = CCC4FMake(1.0, 1.0, 1.0, 1.0);
 
 	// Create the camera, place it back a bit, and add it to the scene    
@@ -85,7 +88,8 @@
 	LogCleanDebug(@"The structure of this scene is: %@", [self structureDescription]);
 }
 
--(void) onOpen {
+- (void)onOpen
+{
     self.cameraStartDirection = CC3VectorMake(-1.0, 1.0, 0.0);
     [self.activeCamera moveToShowAllOf:self.robot fromDirection:self.cameraStartDirection withPadding:3.0];
     [self.boom addChild:self.activeCamera];
@@ -125,10 +129,14 @@
     // Rotate the model to display properly in world
     [self.robotMesh rotateByAngle:97.0 aroundAxis:CC3VectorMake(1.0, 0.0, 0.0)];
     [self.robotMesh rotateByAngle:-90.0 aroundAxis:CC3VectorMake(0.0, 1.0, 0.0)];
-    [self.robotMesh translateBy:CC3VectorMake(1.7, 1.0, -0.7)];
+    [self.robotMesh translateBy:CC3VectorMake(1.7, 1.2, -0.7)];
     
     [self.robot setIsTouchEnabled:YES];
     [self addChild:self.robot];
+    
+#if defined(DEBUG3D)
+	self.robot.shouldDrawWireframeBox = YES;
+#endif
 }
 
 - (void)addCameraBoom
@@ -193,10 +201,13 @@
 - (void)dragBy:(CGPoint)movement atVelocity:(CGPoint)velocity
 {    
     CC3Vector cameraDirection = self.cameraStartDirection;
-    CGPoint panRotation = ccpMult(movement, 180);
+    
+    // Scale the pan rotation vector by 180, so that a pan across the entire screen
+    // results in a 180 degree pan of the camera
+    CGPoint panRotation = ccpMult(movement, 180.0);
 	cameraDirection.y -= panRotation.x;
     cameraDirection.z += panRotation.y;
-
+    
     // Prevent from viewing the robot upside down
 	if (cameraDirection.z < -45.0) {
         cameraDirection.z = -45.0;
@@ -206,8 +217,7 @@
         cameraDirection.z = 45.0;
     }
     
-    self.cameraStartDirection = cameraDirection;
-    self.boom.rotation = self.cameraStartDirection;
+    self.boom.rotation = cameraDirection;
 }
 
 - (void)stopDragging
@@ -215,7 +225,8 @@
     
 }
 
-- (void)touchGroundAt:(CGPoint)touchPoint {
+- (void)touchGroundAt:(CGPoint)touchPoint
+{
 	CC3Plane groundPlane = self.ground.plane;
 	CC3Vector4 touchLoc = [self.activeCamera unprojectPoint:touchPoint ontoPlane:groundPlane];
     
@@ -262,7 +273,7 @@
 	// The bounding volume is removed so that the flames will not be culled as the
 	// camera pans away from the flames. This is suitable since the particle system
 	// only exists for a short duration.
-	CC3ParticleSystemBillboard* bb = [CC3ParticleSystemBillboard nodeWithName:@"EXPLOSION" withBillboard: emitter];
+	CC3ParticleSystemBillboard* bb = [CC3ParticleSystemBillboard nodeWithName:@"EXPLOSION" withBillboard:emitter];
 	
 	// A billboard can be drawn either as part of the 3D scene, or as an overlay
 	// above the 3D scene. By commenting out one of the following sections of code,
@@ -291,9 +302,11 @@
 	// To calculate it dynamically on each update instead, comment out the following line,
 	// and uncomment the line after. And also uncomment the third line to see the bounding
 	// box drawn and updated on each frame.
-	bb.billboardBoundingRect = CGRectMake(-90.0, -50.0, 190.0, 340.0);
-    //	bb.shouldAlwaysMeasureBillboardBoundingRect = YES;
-    //	bb.shouldDrawLocalContentWireframeBox = YES;
+	bb.billboardBoundingRect = CGRectMake(-90.0, -30.0, 190.0, 300.0);
+    // bb.shouldAlwaysMeasureBillboardBoundingRect = YES;
+#if defined(DEBUG3D)
+	bb.shouldDrawLocalContentWireframeBox = YES;
+#endif
     
 	// How did we determine the billboardBoundingRect? This can be done by trial and
 	// error, by uncommenting culling logging in the CC3Billboard doesIntersectBoundingVolume:
@@ -313,9 +326,9 @@
 	// of the camera, we could have the billboard itself track the camera
 	// using the shouldAutotargetCamera property of the billboard itself.
 	bb.location = CC3VectorFromTruncatedCC3Vector4(explosionLocation);
+    bb.location = CC3VectorAdd(bb.location, CC3VectorMake(0.0, 1.0, 0.0));
     bb.shouldAutotargetCamera = YES;
 	[self addChild:bb];
-
     
 	// 2) Overlaid above the 3D scene.
 	// The following lines add the emitter billboard as a 2D overlay that draws above
