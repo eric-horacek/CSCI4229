@@ -213,6 +213,7 @@
 		91B0F3371678ED4400647DE6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F32D1678ED4400647DE6 /* Icon@2x.png */; };
 		91B0F3381678ED4400647DE6 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F32E1678ED4400647DE6 /* iTunesArtwork.png */; };
 		91B0F3391678ED4400647DE6 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F32F1678ED4400647DE6 /* iTunesArtwork@2x.png */; };
+		91D38A0F16790EDF00880E13 /* Tree.pod in Resources */ = {isa = PBXBuildFile; fileRef = 91D38A0E16790EDF00880E13 /* Tree.pod */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -634,6 +635,7 @@
 		91B0F32D1678ED4400647DE6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		91B0F32E1678ED4400647DE6 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		91B0F32F1678ED4400647DE6 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
+		91D38A0E16790EDF00880E13 /* Tree.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tree.pod; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1356,6 +1358,7 @@
 		91B0F33B1678ED7C00647DE6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				91D38A0E16790EDF00880E13 /* Tree.pod */,
 				91B0F2581678EC3400647DE6 /* Robot.pod */,
 			);
 			name = Models;
@@ -1434,6 +1437,7 @@
 				91B0F3371678ED4400647DE6 /* Icon@2x.png in Resources */,
 				91B0F3381678ED4400647DE6 /* iTunesArtwork.png in Resources */,
 				91B0F3391678ED4400647DE6 /* iTunesArtwork@2x.png in Resources */,
+				91D38A0F16790EDF00880E13 /* Tree.pod in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

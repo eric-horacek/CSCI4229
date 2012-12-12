@@ -68,6 +68,8 @@
 	[self retainVertexMatrixIndices];
 	[self createGLBuffers];
 	[self releaseRedundantData];
+    
+    [self addContentFromPODFile: @"Tree.pod" withName:@"Tree"];
 	
 	// Displays short descriptive text for each node (including class, node name & tag).
 	// The text is displayed centered on the pivot point (origin) of the node.
