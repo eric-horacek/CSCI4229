@@ -31,6 +31,7 @@
 - (void)addGround;
 - (void)addRobot;
 - (void)addCameraBoom;
+- (void)addForrest;
 
 @end
 
@@ -62,6 +63,7 @@
     [self addRobot];
     [self addGround];
     [self addCameraBoom];
+    [self addForrest];
 	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
@@ -71,9 +73,7 @@
 	[self retainVertexMatrixIndices];
 	[self createGLBuffers];
 	[self releaseRedundantData];
-    
-    [self addContentFromPODFile: @"Tree.pod" withName:@"Tree"];
-	
+    	
 	// Displays short descriptive text for each node (including class, node name & tag).
 	// The text is displayed centered on the pivot point (origin) of the node.
     // self.shouldDrawAllDescriptors = YES;
@@ -139,6 +139,25 @@
 #if defined(DEBUG3D)
 	self.robot.shouldDrawWireframeBox = YES;
 #endif
+}
+
+- (void)addForrest
+{
+    for (int i = 0; i < 10; i++) {
+        
+        NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
+        
+        [self addContentFromPODFile: @"Tree.pod" withName:treeName];
+        
+        CC3MeshNode *tree = (CC3MeshNode*)[self getNodeNamed:treeName];
+        
+        tree.location = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
+        
+        #if defined(DEBUG3D)
+            tree.shouldDrawWireframeBox = YES;
+        #endif
+    }
+
 }
 
 - (void)addCameraBoom

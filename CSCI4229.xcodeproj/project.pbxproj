@@ -17,6 +17,7 @@
 		91203CC516782B29004DC51F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CC416782B29004DC51F /* UIKit.framework */; };
 		91203CC716782B29004DC51F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CC616782B29004DC51F /* Foundation.framework */; };
 		91203CC916782B29004DC51F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CC816782B29004DC51F /* CoreGraphics.framework */; };
+		912087A5167911600038976E /* Tree.pod in Resources */ = {isa = PBXBuildFile; fileRef = 912087A4167911600038976E /* Tree.pod */; };
 		91B0F2591678EC3400647DE6 /* MSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A11678EC3400647DE6 /* MSAppDelegate.m */; };
 		91B0F25A1678EC3400647DE6 /* MSLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A31678EC3400647DE6 /* MSLayer.m */; };
 		91B0F25B1678EC3400647DE6 /* MSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A51678EC3400647DE6 /* MSScene.m */; };
@@ -214,7 +215,6 @@
 		91B0F3371678ED4400647DE6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F32D1678ED4400647DE6 /* Icon@2x.png */; };
 		91B0F3381678ED4400647DE6 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F32E1678ED4400647DE6 /* iTunesArtwork.png */; };
 		91B0F3391678ED4400647DE6 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F32F1678ED4400647DE6 /* iTunesArtwork@2x.png */; };
-		91D38A0F16790EDF00880E13 /* Tree.pod in Resources */ = {isa = PBXBuildFile; fileRef = 91D38A0E16790EDF00880E13 /* Tree.pod */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -229,6 +229,7 @@
 		91203CC416782B29004DC51F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		91203CC616782B29004DC51F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		91203CC816782B29004DC51F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		912087A4167911600038976E /* Tree.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tree.pod; sourceTree = "<group>"; };
 		91B0F0A01678EC3400647DE6 /* MSAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAppDelegate.h; sourceTree = "<group>"; };
 		91B0F0A11678EC3400647DE6 /* MSAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAppDelegate.m; sourceTree = "<group>"; };
 		91B0F0A21678EC3400647DE6 /* MSLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSLayer.h; sourceTree = "<group>"; };
@@ -638,7 +639,6 @@
 		91B0F32D1678ED4400647DE6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		91B0F32E1678ED4400647DE6 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		91B0F32F1678ED4400647DE6 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
-		91D38A0E16790EDF00880E13 /* Tree.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tree.pod; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1363,7 +1363,7 @@
 		91B0F33B1678ED7C00647DE6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				91D38A0E16790EDF00880E13 /* Tree.pod */,
+				912087A4167911600038976E /* Tree.pod */,
 				91B0F2581678EC3400647DE6 /* Robot.pod */,
 			);
 			name = Models;
@@ -1441,9 +1441,9 @@
 				91B0F3371678ED4400647DE6 /* Icon@2x.png in Resources */,
 				91B0F3381678ED4400647DE6 /* iTunesArtwork.png in Resources */,
 				91B0F3391678ED4400647DE6 /* iTunesArtwork@2x.png in Resources */,
-				91D38A0F16790EDF00880E13 /* Tree.pod in Resources */,
 				3A3E1D001678F8F7006FD145 /* Default-568h@2x.png in Resources */,
 				3A5EF96D1678FC760029BB6A /* fire.png in Resources */,
+				912087A5167911600038976E /* Tree.pod in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
