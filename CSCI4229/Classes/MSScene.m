@@ -178,7 +178,11 @@
         treeLeaves.material.shininess = 128.0;
         treeLeaves.material.specularColor = CCC4FMake(0.0, 0.0, 0.0, 0.0);
         
-        CC3Vector treeTileLocation = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
+        CC3Vector treeTileLocation = CC3VectorMake((rand() % 100) - 50, 0, (rand() % 100) - 50);
+        // Generate a new tree tile location if it intersects the robot
+        while (CC3BoundingBoxContainsLocation(self.robot.boundingBox, treeTileLocation)) {
+            treeTileLocation = CC3VectorMake((rand() % 100) - 50, 0, (rand() % 100) - 50);
+        }
     
         CGPoint treeTile = tileForLocation(treeTileLocation);
         CC3Vector treeLocation = locationForTile(treeTile);
