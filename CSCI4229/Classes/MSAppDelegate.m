@@ -41,7 +41,8 @@
 	// Create the view controller for the 3D view.
 	viewController = [CC3DeviceCameraOverlayUIViewController new];
 	viewController.supportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
-	
+    viewController.viewShouldUseStencilBuffer = YES;	// Shadow volumes make use of stencil buffer
+    
 	// Create the CCDirector, set the frame rate, and attach the view.
 	CCDirector *director = CCDirector.sharedDirector;
 	director.runLoopCommon = YES; // Improves display link integration with UIKit

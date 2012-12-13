@@ -169,6 +169,8 @@
     robotTopLight.shadowIntensityFactor = 0.75f;
     [self.robot addChild:robotTopLight];
     
+    [self.robotMesh addShadowVolumesForLight:robotTopLight];
+    
 #if defined(DEBUG3D)
 	self.robot.shouldDrawWireframeBox = YES;
     [self.robot addAxesDirectionMarkers];
@@ -196,6 +198,9 @@
         
         tree.location = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
         
+        // This causes EXTREME lag (to the point of not rendering any frames), not sure why
+//        [tree addShadowVolumesForLight:(CC3Light *)[self.robot getNodeNamed:@"RobotTopLight"]];
+        
         #if defined(DEBUG3D)
             tree.shouldDrawWireframeBox = YES;
         #endif
@@ -220,7 +225,6 @@
             teapot.uniformScale = 10.0;
             [self addChild:teapot];
             teapot.location = cc3v(x, 2.0, z);
-            [teapot addShadowVolumesForLight:(CC3Light *)[self getNodeNamed:@"Lamp"]];
         }
     }
 }
