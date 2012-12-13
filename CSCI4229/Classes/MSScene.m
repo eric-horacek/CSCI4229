@@ -146,6 +146,7 @@
     [self addContentFromPODFile: @"Robot.pod" withName:@"RobotMesh"];
     
     self.robotMesh = (CC3MeshNode*)[self getNodeNamed: @"RobotMesh"];
+    
     self.robot = [[CC3Node alloc] initWithName:@"Robot"];
     [self.robot addChild:self.robotMesh];
     
@@ -157,8 +158,22 @@
     [self.robot setIsTouchEnabled:YES];
     [self addChild:self.robot];
     
+    // Add a light to illuminate everything in front of the robot with a red glow;
+    CC3Light *robotFrontLight = [CC3Light nodeWithName: @"RobotFrontLight"];
+	robotFrontLight.isDirectionalOnly = NO;
+    robotFrontLight.diffuseColor = CCC4FMake(0.8, 0.0, 0.0, 1.0);
+    robotFrontLight.specularColor = CCC4FMake(0.8, 0.0, 0.0, 1.0);
+    robotFrontLight.shadowIntensityFactor = 0.75f;
+	robotFrontLight.spotCutoffAngle = 50.0;
+    robotFrontLight.forwardDirection = cc3v(0.0, 0.0, 1.0);
+	robotFrontLight.attenuationCoefficients = CC3AttenuationCoefficientsMake(0.0, 0.3, 0.01);
+    
+    [self.robot addChild:robotFrontLight];
+    robotFrontLight.location = cc3v(0.0, 1.9, 1.4);
+    
 #if defined(DEBUG3D)
 	self.robot.shouldDrawWireframeBox = YES;
+    [self.robot addAxesDirectionMarkers];
 #endif
 }
 
