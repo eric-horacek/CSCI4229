@@ -21,6 +21,7 @@
 #import "CC3ShadowVolumes.h"
 #import "CC3VertexArrays.h"
 #import "CC3BoundingVolumes.h"
+#import "CC3ModelSampleFactory.h"
 
 #import "MSRobot.h"
 #import "MSShortestPathHelpers.h"
@@ -37,6 +38,9 @@
 - (void)addCameraBoom;
 - (void)addForest;
 
+- (void)addTeapotsForLightsWithParent:(CCNode *)parentNode;
+- (void)addExampleLandscape;
+
 @end
 
 @implementation MSScene
@@ -45,26 +49,22 @@
 
 - (void)initializeScene
 {
-    self.ambientLight = CCC4FMake(1.0, 1.0, 1.0, 1.0);
-
-	// Create the camera, place it back a bit, and add it to the scene    
+    self.ambientLight = CCC4FMake(0.0, 0.0, 0.0, 0.3);
+    
 	CC3Camera* camera = [CC3Camera nodeWithName: @"Camera"];
-	camera.location = cc3v( 0.0, 0.0, 20.0 );
     [self addChild:camera];
     
-	// Create a light, place it back and to the left at a specific
-	// position (not just directional lighting), and add it to the scene
-	CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
-	lamp.location = cc3v(0.0, 10.0, 0.0 );
-	lamp.isDirectionalOnly = NO;
-	[self addChild: lamp];
-    
-    [self addRobot];
     [self addGround];
     [self addCameraBoom];
     [self addForest];
+    [self addRobot];
     
     self.robot.boom = self.boom;
+
+    #if defined(DEBUG3D)
+        [self addTeapotsForLightsWithParent:(CCNode *)self];
+        [self addExampleLandscape];
+    #endif
 	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
@@ -109,14 +109,26 @@
 
 - (void)addGround
 {
-	self.ground = [CC3PlaneNode nodeWithName:@"Ground"];
-	[self.ground populateAsDiskWithRadius:1500 andTessellation: ccg(8, 32)];
+    self.ground = [CC3PlaneNode nodeWithName:@"Ground"];
     
-	self.ground.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
-	[self.ground repeatTexture: (ccTex2F){100, 100}];
+    CGFloat gridTotalSize = 25.0;
+    
+    [self.ground populateAsCenteredRectangleWithSize:CGSizeMake(0.001, 0.001)];
+    
+    for (CGFloat x = -(gridTotalSize / 2.0); x <= (gridTotalSize / 2.0); x += 1.0) {
+        for (CGFloat z = -(gridTotalSize / 2.0); z <= (gridTotalSize / 2.0); z += 1.0) {
+            CC3PlaneNode *groundSegment = [CC3PlaneNode nodeWithName:[NSString stringWithFormat:@"%f-%f", x, z]];
+            [groundSegment populateAsRectangleWithSize:CGSizeMake(10.0, 10.0) andRelativeOrigin:CGPointMake(x, z) andTessellation:ccg(16, 16)];
+            groundSegment.color = ccGRAY;
+            groundSegment.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
+            [groundSegment repeatTexture: (ccTex2F){1.0, 1.0}];
+            [self.ground addChild:groundSegment];
+        }
+    }
     
 	self.ground.location = cc3v(0.0, 0.0, 0.0);
 	self.ground.rotation = cc3v(-90.0, 180.0, 0.0);
+    
 	self.ground.shouldCullBackFaces = NO; // Show the ground from below as well.
 	self.ground.isTouchEnabled = YES;
 	[self.ground retainVertexLocations];
@@ -127,10 +139,12 @@
 {
     self.robot = [[MSRobot alloc] initWithName:@"Robot"];
     [self addChild:self.robot];
+    [self.robot addShadows];
     
-#if defined(DEBUG3D)
-	self.robot.shouldDrawWireframeBox = YES;
-#endif
+    #if defined(DEBUG3D)
+        self.robot.shouldDrawWireframeBox = YES;
+        [self.robot addAxesDirectionMarkers];
+    #endif
 }
 
 - (void)addForest
@@ -143,9 +157,21 @@
         
         CC3MeshNode *tree = (CC3MeshNode*)[self getNodeNamed:treeName];
         
+        CC3MeshNode *treeTrunk = (CC3MeshNode*)[tree getNodeNamed:@"tree-submesh0"];
+        treeTrunk.color = ccc3(76.0, 38.0, 0.0);
+        treeTrunk.material.shininess = 16.0;
+        
+        CC3MeshNode *treeLeaves = (CC3MeshNode*)[tree getNodeNamed:@"tree-submesh1"];
+        treeLeaves.color = ccc3(64.0, 128.0, 0.0);
+        treeLeaves.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
+        [treeLeaves repeatTexture: (ccTex2F){1.0, 1.0}];
+        
         tree.location = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
         tree.isTouchEnabled = YES;
     
+        // This causes EXTREME lag (to the point of not rendering any frames), not sure why
+        // [tree addShadowVolumesForLight:(CC3Light *)[self.robot getNodeNamed:@"RobotTopLight"]];
+
         #if defined(DEBUG3D)
             tree.shouldDrawWireframeBox = YES;
         #endif
@@ -160,6 +186,34 @@
     [self addChild:self.boom];
 }
 
+- (void)addExampleLandscape
+{
+    NSUInteger gridSize = 10.0;
+    NSUInteger gridSpace = 20.0;
+    for (CGFloat x = -((gridSize / 2.0) * gridSpace); x <= ((gridSize / 2.0) * gridSpace); x += gridSpace) {
+        for (CGFloat z = -((gridSize / 2.0) * gridSpace); z <= ((gridSize / 2.0) * gridSpace); z += gridSpace) {
+            CC3MeshNode *teapot = [[CC3ModelSampleFactory factory] makeUniColoredTeapotNamed:@"RobotLightTeapot" withColor:ccc4f(1.0, 1.0, 1.0, 1.0)];
+            teapot.uniformScale = 10.0;
+            [self addChild:teapot];
+            teapot.location = cc3v(x, 2.0, z);
+        }
+    }
+}
+
+- (void)addTeapotsForLightsWithParent:(CCNode *)parentNode
+{
+    for (CCNode *node in parentNode.children) {
+        if ([node isKindOfClass:CC3Light.class]) {
+            CC3Light *light = (CC3Light *)node;
+            CC3MeshNode *lightMarker = [[CC3ModelSampleFactory factory] makeUniColoredTeapotNamed:@"RobotLightTeapot" withColor:CCC4FFromColorAndOpacity(light.color, 0.5)];
+            lightMarker.uniformScale = 3.0;
+            lightMarker.rotation = light.forwardDirection;
+            [light addChild:lightMarker];
+            [lightMarker addAxesDirectionMarkers];
+        }
+        [self addTeapotsForLightsWithParent:node];
+    }
+}
 
 #pragma mark - Update Custom Activity
 
@@ -301,9 +355,10 @@
 	// box drawn and updated on each frame.
 	bb.billboardBoundingRect = CGRectMake(-90.0, -30.0, 190.0, 300.0);
     // bb.shouldAlwaysMeasureBillboardBoundingRect = YES;
-#if defined(DEBUG3D)
-	bb.shouldDrawLocalContentWireframeBox = YES;
-#endif
+    
+    #if defined(DEBUG3D)
+        bb.shouldDrawLocalContentWireframeBox = YES;
+    #endif
     
 	// How did we determine the billboardBoundingRect? This can be done by trial and
 	// error, by uncommenting culling logging in the CC3Billboard doesIntersectBoundingVolume:

@@ -15,6 +15,8 @@
 #import "CCActionInterval.h"
 #import "CCActionInstant.h"
 #import "CC3ActionInterval.h"
+#import "CC3Light.h"
+#import "CC3ShadowVolumes.h"
 
 @interface MSRobot ()
 
@@ -57,8 +59,34 @@
         
         CCActionInterval *walk = [CC3Animate actionWithDuration:0.5];
         self.walkAction = [CCRepeatForever actionWithAction:walk];
+        
+        // Add a light to illuminate everything in front of the robot with a red glow;
+        CC3Light *robotFrontLight = [CC3Light nodeWithName:@"RobotFrontLight"];
+        robotFrontLight.isDirectionalOnly = NO;
+        robotFrontLight.diffuseColor = CCC4FMake(1.0, 0.0, 0.0, 1.0);
+        robotFrontLight.specularColor = CCC4FMake(1.0, 0.0, 0.0, 1.0);
+        robotFrontLight.shadowIntensityFactor = 0.75f;
+        robotFrontLight.spotCutoffAngle = 50.0;
+        robotFrontLight.forwardDirection = cc3v(0.0, -0.5, 1.0);
+        robotFrontLight.attenuationCoefficients = CC3AttenuationCoefficientsMake(0.0, 0.3, 0.01);
+        
+        [self addChild:robotFrontLight];
+        robotFrontLight.location = cc3v(0.0, 1.9, 1.4);
+        
+        self.topLight = [CC3Light nodeWithName:@"self.topLight"];
+        self.topLight.location = cc3v(0.0, 8.0, 0.0);;
+        self.topLight.attenuationCoefficients = CC3AttenuationCoefficientsMake(0.2, 0.1, 0.001);
+        self.topLight.isDirectionalOnly = NO;
+        self.topLight.shadowIntensityFactor = 0.75f;
+        [self addChild:self.topLight];
+        
 	}
 	return self;
+}
+
+- (void)addShadows
+{
+    [self.mesh addShadowVolumesForLight:self.topLight];
 }
 
 - (void)moveToward:(CC3Vector)target {
