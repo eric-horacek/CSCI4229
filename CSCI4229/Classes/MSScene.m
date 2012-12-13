@@ -52,15 +52,11 @@
 - (void)initializeScene
 {
     self.ambientLight = CCC4FMake(0.05, 0.05, 0.1, 0.1);
-//    self.ambientLight = CCC4FMake(1.0, 1.0, 1.0, 0.7);
     
     [self addGround];
-//    [self addCameraBoom];
     [self addForest];
     [self addRobot];
     [self addSky];
-    
-//    self.robot.boom = self.boom;
 
 #if defined(DEBUG3D)
     [self addTeapotsForLightsWithParent:(CCNode *)self];

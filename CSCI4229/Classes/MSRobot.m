@@ -415,7 +415,7 @@
         
         // Scale the pan rotation vector by 180, so that a pan across the entire screen
         // results in a 180 degree pan of the camera
-        CGPoint panRotation = ccpMult(movement, 180.0);
+        CGPoint panRotation = ccpMult(movement, 100.0);
         cameraDirection.y -= panRotation.x;
         cameraDirection.x += panRotation.y;
         
