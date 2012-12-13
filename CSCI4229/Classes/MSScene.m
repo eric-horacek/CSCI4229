@@ -114,14 +114,27 @@
 
 - (void)addGround
 {
-	self.ground = [CC3PlaneNode nodeWithName:@"Ground"];
-	[self.ground populateAsDiskWithRadius:1500 andTessellation: ccg(8, 32)];
+    self.ground = [CC3PlaneNode nodeWithName:@"Ground"];
     
-	self.ground.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
-	[self.ground repeatTexture: (ccTex2F){100, 100}];
+    CGFloat gridSize = 10.0;
+    CGFloat gridSpace = 1.0;
+    
+    [self.ground populateAsCenteredRectangleWithSize:CGSizeMake(0.001, 0.001)];
+    
+    for (CGFloat x = -((gridSize / 2.0) * gridSpace); x <= ((gridSize / 2.0) * gridSpace); x += gridSpace) {
+        for (CGFloat z = -((gridSize / 2.0) * gridSpace); z <= ((gridSize / 2.0) * gridSpace); z += gridSpace) {
+            CC3PlaneNode *groundSegment = [CC3PlaneNode nodeWithName:[NSString stringWithFormat:@"%f-%f", x, z]];
+            [groundSegment populateAsRectangleWithSize:CGSizeMake((gridSize/gridSpace), (gridSize/gridSpace)) andRelativeOrigin:CGPointMake(x, z) andTessellation:ccg(32, 32)];
+            groundSegment.color = ccGRAY;
+            groundSegment.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
+            [groundSegment repeatTexture: (ccTex2F){1.0, 1.0}];
+            [self.ground addChild:groundSegment];
+        }
+    }
     
 	self.ground.location = cc3v(0.0, 0.0, 0.0);
 	self.ground.rotation = cc3v(-90.0, 180.0, 0.0);
+    
 	self.ground.shouldCullBackFaces = NO; // Show the ground from below as well.
 	self.ground.isTouchEnabled = YES;
 	[self.ground retainVertexLocations];
