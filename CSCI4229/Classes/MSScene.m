@@ -22,7 +22,7 @@
 #import "CC3VertexArrays.h"
 #import "CC3ModelSampleFactory.h"
 
-#define DEBUG3D
+//#define DEBUG3D
 
 @interface MSScene ()
 
@@ -51,11 +51,9 @@
 
 - (void)initializeScene
 {
-    self.ambientLight = CCC4FMake(1.0, 1.0, 1.0, 1.0);
-
-	// Create the camera, place it back a bit, and add it to the scene    
+    self.ambientLight = CCC4FMake(0.5, 0.5, 0.5, 0.3);
+    
 	CC3Camera* camera = [CC3Camera nodeWithName: @"Camera"];
-	camera.location = cc3v( 0.0, 0.0, 20.0 );
     [self addChild:camera];
     
 	self.lamp = [CC3Light nodeWithName: @"Lamp"];
@@ -65,16 +63,16 @@
     self.lamp.shadowIntensityFactor = 0.75f;
     [self addChild:self.lamp];
     
-    [self addRobot];
     [self addGround];
     [self addCameraBoom];
-	
+    [self addRobot];
+    
     [self addExampleLandscape];
     
 #if defined(DEBUG3D)
     [self addTeapotsForLightsWithParent:(CCNode *)self];
 #endif
-    
+	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
     [self retainVertexLocations];
