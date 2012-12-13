@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3A3E1D001678F8F7006FD145 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A3E1CFF1678F8F7006FD145 /* Default-568h@2x.png */; };
 		3A5EF96D1678FC760029BB6A /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A5EF96C1678FC760029BB6A /* fire.png */; };
+		3AA69A9C167A42E90094ADA8 /* MSCameraBoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AA69A9B167A42E90094ADA8 /* MSCameraBoom.m */; };
 		911D0DD016796C5800EA5C9F /* MSRobot.m in Sources */ = {isa = PBXBuildFile; fileRef = 912087B316793F5F0038976E /* MSRobot.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		91203CBB16782B29004DC51F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBA16782B29004DC51F /* QuartzCore.framework */; };
 		91203CBD16782B29004DC51F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBC16782B29004DC51F /* OpenGLES.framework */; };
@@ -223,6 +224,9 @@
 /* Begin PBXFileReference section */
 		3A3E1CFF1678F8F7006FD145 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		3A5EF96C1678FC760029BB6A /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fire.png; sourceTree = "<group>"; };
+		3AA69A98167A412B0094ADA8 /* MSTouchReceptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSTouchReceptor.h; sourceTree = "<group>"; };
+		3AA69A9A167A42E90094ADA8 /* MSCameraBoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSCameraBoom.h; sourceTree = "<group>"; };
+		3AA69A9B167A42E90094ADA8 /* MSCameraBoom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSCameraBoom.m; sourceTree = "<group>"; };
 		91203CB616782B29004DC51F /* CSCI4229.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CSCI4229.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91203CBA16782B29004DC51F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		91203CBC16782B29004DC51F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -723,6 +727,9 @@
 				91B0F0A51678EC3400647DE6 /* MSScene.m */,
 				912087B216793F5F0038976E /* MSRobot.h */,
 				912087B316793F5F0038976E /* MSRobot.m */,
+				3AA69A9A167A42E90094ADA8 /* MSCameraBoom.h */,
+				3AA69A9B167A42E90094ADA8 /* MSCameraBoom.m */,
+				3AA69A98167A412B0094ADA8 /* MSTouchReceptor.h */,
 				912087B9167950F90038976E /* MSShortestPathStep.h */,
 				912087BA167950F90038976E /* MSShortestPathStep.m */,
 				912087BC167958450038976E /* MSShortestPathHelpers.h */,
@@ -1655,6 +1662,7 @@
 				91B0F3141678EC3400647DE6 /* main.m in Sources */,
 				912087BB167950F90038976E /* MSShortestPathStep.m in Sources */,
 				912087BE167958520038976E /* MSShortestPathHelpers.m in Sources */,
+				3AA69A9C167A42E90094ADA8 /* MSCameraBoom.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

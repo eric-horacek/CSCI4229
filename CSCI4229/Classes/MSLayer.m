@@ -70,14 +70,14 @@
 	switch (gesture.state) {
 		case UIGestureRecognizerStateBegan:
 			if ([self cc3ValidateGesture: gesture]) {
-				[self.scene startDraggingAt:[self cc3ConvertUIPointToNodeSpace:gesture.location]];
+				[self.scene dragStartedAtPoint:[self cc3ConvertUIPointToNodeSpace:gesture.location]];
 			}
 			break;
 		case UIGestureRecognizerStateChanged:
-			[self.scene dragBy:[self cc3NormalizeUIMovement:gesture.translation] atVelocity:[self cc3NormalizeUIMovement:gesture.velocity]];
+			[self.scene dragMoved:[self cc3NormalizeUIMovement:gesture.translation] withVelocity:[self cc3NormalizeUIMovement:gesture.velocity]];
 			break;
 		case UIGestureRecognizerStateEnded:
-			[self.scene stopDragging];
+			[self.scene dragEnded];
 			break;
 		default:
 			break;
