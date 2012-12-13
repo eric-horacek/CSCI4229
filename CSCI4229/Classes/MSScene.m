@@ -28,7 +28,7 @@
 
 #import "MSCameraBoom.h"
 
-#define DEBUG3D
+//#define DEBUG3D
 
 @interface MSScene ()
 
@@ -40,8 +40,6 @@
 
 - (void)addTeapotsForLightsWithParent:(CCNode *)parentNode;
 - (void)addExampleLandscape;
-
-- (void)toogleRobotFirstPerson;
 
 @end
 
@@ -279,36 +277,32 @@
 
 - (void)dragStartedAtPoint:(CGPoint)touchPoint
 {
-//    self.cameraStartDirection = self.boom.rotation;
     [self.robot dragStartedAtPoint:touchPoint];
 }
 
 - (void)dragMoved:(CGPoint)movement withVelocity:(CGPoint)velocity
-{    
-//    CC3Vector cameraDirection = self.cameraStartDirection;
-//    
-//    // Scale the pan rotation vector by 180, so that a pan across the entire screen
-//    // results in a 180 degree pan of the camera
-//    CGPoint panRotation = ccpMult(movement, 180.0);
-//	cameraDirection.y -= panRotation.x;
-//    cameraDirection.z += panRotation.y;
-//    
-//    // Prevent from viewing the robot upside down
-//	if (cameraDirection.z < -45.0) {
-//        cameraDirection.z = -45.0;
-//    }
-//    // Prevent from viewing the robot from underground
-//    else if (cameraDirection.z > 45.0) {
-//        cameraDirection.z = 45.0;
-//    }
-//    
-//    self.boom.rotation = cameraDirection;
+{
     [self.robot dragMoved:movement withVelocity:velocity];
 }
 
 - (void)dragEnded
 {
     [self.robot dragEnded];
+}
+
+- (void)pinchStarted
+{
+    [self.robot pinchStarted];
+}
+
+- (void)pinchChangedScale:(CGFloat)aScale withVelocity:(CGFloat)aVelocity
+{
+    [self.robot pinchChangedScale:aScale withVelocity:aVelocity];
+}
+
+- (void)pinchEnded
+{
+    [self.robot pinchStarted];
 }
 
 - (void)touchGroundAt:(CGPoint)touchPoint

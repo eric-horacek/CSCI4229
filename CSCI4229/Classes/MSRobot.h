@@ -19,6 +19,7 @@
 @property (nonatomic, strong) CC3Light *topLight;
 @property (nonatomic, strong) CC3Light *frontLight;
 @property (nonatomic, strong) CC3Camera *firstPersonCamera;
+@property (nonatomic, strong) CC3Camera *transitionCamera;
 
 - (id)initWithName:(NSString*)aName parent:(CC3Node *)parent;
 

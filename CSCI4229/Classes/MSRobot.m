@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSMutableArray *shortestPathClosedSteps;
 @property (nonatomic, strong) NSMutableArray *shortestPath;
 @property (nonatomic, strong) CCRepeatForever *walkAction;
+@property (nonatomic, assign) BOOL togglingCamera;
 
 @property (nonatomic, assign) CC3Vector cameraStartDirection;
 
@@ -53,7 +54,7 @@
         [self.mesh translateBy:CC3VectorMake(1.7, 1.0, -0.7)];
     
         self.isTouchEnabled = YES;
-
+        
         // Pathfinding
         
         self.shortestPathClosedSteps = nil;
@@ -69,10 +70,15 @@
         
         // Camera
         
+        self.togglingCamera = NO;
+        
         self.firstPersonCamera = [CC3Camera nodeWithName:@"RobotFirstPersonCamera"];
         [self addChild:self.firstPersonCamera];
         self.firstPersonCamera.location = cc3v(0.0, 1.9, 1.6);
         self.firstPersonCamera.forwardDirection = cc3v(0.0, 0.0, 1.0);
+
+        self.transitionCamera = [CC3Camera nodeWithName:@"RobotTransitionCamera"];
+        [self addChild:self.transitionCamera];
         
         self.cameraBoom = [[MSCameraBoom alloc] initWithName:@"RobotCameraBoom" target:self];
         // We don't want the camera boom to be a child of ourself, but of our parent
@@ -113,28 +119,86 @@
     [self.mesh addShadowVolumesForLight:self.topLight];
 }
 
+- (void)removeShadows
+{
+    [self.mesh removeShadowVolumesForLight:self.topLight];
+}
+
 - (void)toggleCameras
 {
+    if (self.togglingCamera == YES) {
+        return;
+    }
+    
     if (self.scene.activeCamera == self.firstPersonCamera) {
-        self.mesh.visible = NO;
-		self.scene.activeCamera = self.cameraBoom.camera;
+        
+        self.togglingCamera = YES;
+        
+        [self.scene addChild:self.transitionCamera];
+        
+        self.transitionCamera.location = self.firstPersonCamera.globalLocation;
+        self.transitionCamera.rotation = self.firstPersonCamera.globalRotation;
+        
+        [self removeShadows];
+        self.scene.activeCamera = self.transitionCamera;
+        
+        id moveCallback = [CCCallFunc actionWithTarget:self selector:@selector(setActiveCameraToBoomCamera)];
+        CC3MoveTo *moveAction = [CC3MoveTo actionWithDuration:0.5 moveTo:self.cameraBoom.camera.globalLocation];
+        [self.transitionCamera runAction:[CC3RotateTo actionWithDuration:0.5 rotateTo:self.cameraBoom.camera.globalRotation]];
+        [self.transitionCamera runAction:[CCSequence actions:moveAction, moveCallback, nil]];
+        
 	} else if (self.activeCamera == self.cameraBoom.camera) {
-        self.mesh.visible = YES;
-		self.scene.activeCamera = self.firstPersonCamera;
+        
+        self.togglingCamera = YES;
+        
+        [self.scene addChild:self.transitionCamera];
+        
+        self.transitionCamera.location = self.cameraBoom.camera.globalLocation;
+        self.transitionCamera.rotation = self.cameraBoom.camera.globalRotation;
+        
+        [self removeShadows];
+        self.scene.activeCamera = self.transitionCamera;
+        
+        id moveCallback = [CCCallFunc actionWithTarget:self selector:@selector(setActiveCameraToFirstPersonCamera)];
+        CC3MoveTo *moveAction = [CC3MoveTo actionWithDuration:0.5 moveTo:self.firstPersonCamera.globalLocation];
+        [self.transitionCamera runAction:[CC3RotateTo actionWithDuration:0.5 rotateTo:self.firstPersonCamera.globalRotation]];
+        [self.transitionCamera runAction:[CCSequence actions:moveAction, moveCallback, nil]];
 	}
+}
+
+- (void)setActiveCameraToBoomCamera
+{
+    self.scene.activeCamera = self.cameraBoom.camera;
+    self.togglingCamera = NO;
+    [self addShadows];
+}
+
+- (void)setActiveCameraToFirstPersonCamera
+{
+    self.scene.activeCamera = self.firstPersonCamera;
+    self.togglingCamera = NO;
+//    [self addShadows];
+}
+
+- (void)rotateFirstPersonCameraToForward
+{
+    [self.firstPersonCamera runAction:[CC3RotateTo actionWithDuration:0.3 rotateTo:CC3VectorMake(self.firstPersonCamera.rotation.x, -180.0, self.firstPersonCamera.rotation.z)]];
 }
 
 - (void)moveToward:(CC3Vector)target
 {
     [self stopAllActions];
     [self.cameraBoom stopAllActions];
+    [self rotateFirstPersonCameraToForward];
     self.shortestPath = [@[[[MSShortestPathStep alloc] initWithPosition:tileFractionForLocation(target)]] mutableCopy];
     [self runAction:self.walkAction];
     [self popStepAndAnimate];
 }
 
 - (void)navigateToward:(CC3Vector)target
-{    
+{
+    [self rotateFirstPersonCameraToForward];
+    
     CGPoint sourceTile = tileForLocation(self.location);
     CGPoint destinationTile = tileForLocation(target);
     
@@ -346,7 +410,7 @@
 
 - (void)dragMoved:(CGPoint)movement withVelocity:(CGPoint)velocity;
 {
-    if (self.scene.activeCamera == self.firstPersonCamera) {
+    if (self.scene.activeCamera == self.firstPersonCamera && !self.togglingCamera) {
 
         CC3Vector cameraDirection = self.cameraStartDirection;
         
@@ -377,6 +441,7 @@
         self.firstPersonCamera.rotation = cameraDirection;
         
 	} else if (self.activeCamera == self.cameraBoom.camera) {
+        
         [self.cameraBoom dragMoved:movement withVelocity:velocity];
     }
 }
@@ -388,6 +453,29 @@
     } else if (self.activeCamera == self.cameraBoom.camera) {
         [self.cameraBoom dragEnded];
     }
+}
+
+- (void)pinchStarted
+{
+    if (self.scene.activeCamera == self.firstPersonCamera) {
+        [self toggleCameras];
+    } else if (self.activeCamera == self.cameraBoom.camera) {
+        [self.cameraBoom pinchStarted];
+    }
+}
+
+- (void)pinchChangedScale:(CGFloat)aScale withVelocity:(CGFloat)aVelocity
+{
+    if (aVelocity > 8.0 && self.activeCamera == self.cameraBoom.camera) {
+        [self toggleCameras];
+    } else if (!self.togglingCamera) {
+        [self.cameraBoom pinchChangedScale:aScale withVelocity:aVelocity];
+    }
+}
+
+- (void)pinchEnded
+{
+    [self.cameraBoom pinchStarted];
 }
 
 @end

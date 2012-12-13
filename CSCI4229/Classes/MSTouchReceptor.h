@@ -16,4 +16,8 @@
 - (void)dragMoved:(CGPoint)movement withVelocity:(CGPoint)velocity;
 - (void)dragEnded;
 
+- (void)pinchStarted;
+- (void)pinchChangedScale:(CGFloat)scale withVelocity:(CGFloat)velocity;
+- (void)pinchEnded;
+
 @end

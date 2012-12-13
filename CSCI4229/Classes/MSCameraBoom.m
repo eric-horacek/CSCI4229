@@ -12,7 +12,8 @@
 
 @interface MSCameraBoom ()
 
-@property (nonatomic, assign) CC3Vector cameraStartDirection;
+@property (nonatomic, assign) CC3Vector dragStartRotation;
+@property (nonatomic, assign) CC3Vector dragStartCameraLocation;
 
 @end
 
@@ -26,6 +27,9 @@
     if (self) {
         
         self.target = target;
+        
+        self.maxDistance = 50.0;
+        self.minDistance = 10.0;
         
         self.camera = [CC3Camera nodeWithName:@"CameraBoom-Camera"];
         [self addChild:self.camera];
@@ -42,38 +46,76 @@
     [self addChild:self.camera];
 }
 
+- (CGFloat)cameraDistance
+{
+    return CC3VectorLength(self.camera.location);
+}
+
 #pragma mark - MSTouchReceptor
 
 - (void)dragStartedAtPoint:(CGPoint)touchPoint
 {
-    self.cameraStartDirection = self.rotation;
+    self.dragStartRotation = self.rotation;
 }
 
 - (void)dragMoved:(CGPoint)movement withVelocity:(CGPoint)velocity
 {
-    CC3Vector cameraDirection = self.cameraStartDirection;
+    CC3Vector rotation = self.dragStartRotation;
     
     // Scale the pan rotation vector by 180, so that a pan across the entire screen
     // results in a 180 degree pan of the camera
     CGPoint panRotation = ccpMult(movement, 180.0);
-	cameraDirection.y -= panRotation.x;
-    cameraDirection.z += panRotation.y;
+	rotation.y -= panRotation.x;
+    rotation.z += panRotation.y;
     
     // Prevent from viewing the target upside down
-	if (cameraDirection.z < -45.0) {
-        cameraDirection.z = -45.0;
+	if (rotation.z < -45.0) {
+        rotation.z = -45.0;
     }
     // Prevent from viewing the target from underground
-    else if (cameraDirection.z > 45.0) {
-        cameraDirection.z = 45.0;
+    else if (rotation.z > 45.0) {
+        rotation.z = 45.0;
     }
     
-    self.rotation = cameraDirection;
+    self.rotation = rotation;
 }
 
 - (void)dragEnded
 {
-    self.cameraStartDirection = kCC3VectorNull;
+    self.dragStartRotation = kCC3VectorNull;
+}
+
+- (void)pinchStarted
+{
+    self.dragStartCameraLocation = self.camera.location;
+}
+
+- (void)pinchChangedScale:(CGFloat)aScale withVelocity:(CGFloat)aVelocity
+{
+    CC3Vector cameraLocation = self.dragStartCameraLocation;
+    
+    GLfloat moveDist = logf(aScale) * 50.0;
+	CC3Vector moveVector = CC3VectorScaleUniform(self.camera.forwardDirection, moveDist);
+	cameraLocation = CC3VectorAdd(cameraLocation, moveVector);
+    
+    // If we're more than 50 out
+    if (CC3VectorLength(cameraLocation) > self.maxDistance) {
+        cameraLocation = self.camera.location;
+    }
+    // If we're less than 5 in
+    if (CC3VectorLength(cameraLocation) < self.minDistance) {
+        cameraLocation = self.camera.location;
+    }
+    if (cameraLocation.y < 0.0) {
+        cameraLocation = self.camera.location;
+    }
+    
+    self.camera.location = cameraLocation;
+}
+
+- (void)pinchEnded
+{
+    self.dragStartCameraLocation = kCC3VectorNull;
 }
 
 @end

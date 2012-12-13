@@ -14,6 +14,10 @@
 @property (nonatomic, strong) CC3Camera *camera;
 @property (nonatomic, weak) CC3Node *target;
 
+@property (nonatomic, assign) CGFloat minDistance;
+@property (nonatomic, assign) CGFloat maxDistance;
+@property (nonatomic, readonly) CGFloat cameraDistance;
+
 - (id)initWithName:(NSString*)aName target:(CC3Node *)target;
 
 - (void)setupCamera;

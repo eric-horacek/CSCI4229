@@ -40,16 +40,20 @@
 {
 
 	// Register for tap gestures to select 3D nodes.
-	UITapGestureRecognizer* tapSelector = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(handleTapSelection:)];
+	UITapGestureRecognizer* tapSelector = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapSelection:)];
 	tapSelector.numberOfTapsRequired = 1;
 	tapSelector.cancelsTouchesInView = NO; // Ensures touches are passed to buttons
 	[self cc3AddGestureRecognizer: tapSelector];
     
     // Register for single-finger dragging gestures used to rotate the camera
-	UIPanGestureRecognizer* dragPanner = [[UIPanGestureRecognizer alloc] initWithTarget: self action: @selector(handleDrag:)];
-	dragPanner.minimumNumberOfTouches = 1;
-	dragPanner.maximumNumberOfTouches = 1;
-	[self cc3AddGestureRecognizer: dragPanner];
+	UIPanGestureRecognizer* panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+	panGestureRecognizer.minimumNumberOfTouches = 1;
+	panGestureRecognizer.maximumNumberOfTouches = 1;
+	[self cc3AddGestureRecognizer: panGestureRecognizer];
+    
+    // Register for double-finger dragging to pan the camera.
+	UIPinchGestureRecognizer* pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinch:)];
+	[self cc3AddGestureRecognizer: pinchGestureRecognizer];
 }
 
 
@@ -65,19 +69,38 @@
 	}
 }
 
-- (void)handleDrag:(UIPanGestureRecognizer*) gesture
+- (void)handlePan:(UIPanGestureRecognizer*)panGesture
 {
-	switch (gesture.state) {
+	switch (panGesture.state) {
 		case UIGestureRecognizerStateBegan:
-			if ([self cc3ValidateGesture: gesture]) {
-				[self.scene dragStartedAtPoint:[self cc3ConvertUIPointToNodeSpace:gesture.location]];
+			if ([self cc3ValidateGesture:panGesture]) {
+				[self.scene dragStartedAtPoint:[self cc3ConvertUIPointToNodeSpace:panGesture.location]];
 			}
 			break;
 		case UIGestureRecognizerStateChanged:
-			[self.scene dragMoved:[self cc3NormalizeUIMovement:gesture.translation] withVelocity:[self cc3NormalizeUIMovement:gesture.velocity]];
+			[self.scene dragMoved:[self cc3NormalizeUIMovement:panGesture.translation] withVelocity:[self cc3NormalizeUIMovement:panGesture.velocity]];
 			break;
 		case UIGestureRecognizerStateEnded:
 			[self.scene dragEnded];
+			break;
+		default:
+			break;
+	}
+}
+
+- (void)handlePinch:(UIPinchGestureRecognizer *)pinchGesture
+{
+    switch (pinchGesture.state) {
+		case UIGestureRecognizerStateBegan:
+			if ([self cc3ValidateGesture:pinchGesture]) {
+                [self.scene pinchStarted];
+            }
+			break;
+		case UIGestureRecognizerStateChanged:
+            [self.scene pinchChangedScale:pinchGesture.scale withVelocity:pinchGesture.velocity];
+			break;
+		case UIGestureRecognizerStateEnded:
+			[self.scene pinchEnded];
 			break;
 		default:
 			break;
