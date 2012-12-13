@@ -29,6 +29,8 @@
 @property (nonatomic, assign) CC3Vector cameraStartDirection;
 @property (nonatomic, strong) CC3Node *boom;
 
+@property (nonatomic, strong) CC3Light *lamp;
+
 - (void)addGround;
 - (void)addRobot;
 - (void)addCameraBoom;
@@ -56,12 +58,12 @@
 	camera.location = cc3v( 0.0, 0.0, 20.0 );
     [self addChild:camera];
     
-	// Create a light, place it back and to the left at a specific
-	// position (not just directional lighting), and add it to the scene
-	CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
-	lamp.location = cc3v(0.0, 10.0, 0.0 );
-	lamp.isDirectionalOnly = NO;
-	[self addChild: lamp];
+	self.lamp = [CC3Light nodeWithName: @"Lamp"];
+    self.lamp.location = cc3v(0.0, 10.0, 0.0);;
+    self.lamp.attenuationCoefficients = CC3AttenuationCoefficientsMake(0.2, 0.1, 0.001);
+	self.lamp.isDirectionalOnly = NO;
+    self.lamp.shadowIntensityFactor = 0.75f;
+    [self addChild:self.lamp];
     
     [self addRobot];
     [self addGround];
