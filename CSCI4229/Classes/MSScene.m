@@ -20,6 +20,7 @@
 #import "CCParticleExamples.h"
 #import "CC3ShadowVolumes.h"
 #import "CC3VertexArrays.h"
+#import "CC3ModelSampleFactory.h"
 
 #define DEBUG3D
 
@@ -31,6 +32,9 @@
 - (void)addGround;
 - (void)addRobot;
 - (void)addCameraBoom;
+
+- (void)addTeapotsForLightsWithParent:(CCNode *)parentNode;
+- (void)addExampleLandscape;
 
 @end
 
@@ -63,6 +67,12 @@
     [self addGround];
     [self addCameraBoom];
 	
+    [self addExampleLandscape];
+    
+#if defined(DEBUG3D)
+    [self addTeapotsForLightsWithParent:(CCNode *)self];
+#endif
+    
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
     [self retainVertexLocations];
@@ -146,6 +156,35 @@
     [self addChild:self.boom];
 }
 
+- (void)addExampleLandscape
+{
+    NSUInteger gridSize = 10.0;
+    NSUInteger gridSpace = 20.0;
+    for (CGFloat x = -((gridSize / 2.0) * gridSpace); x <= ((gridSize / 2.0) * gridSpace); x += gridSpace) {
+        for (CGFloat z = -((gridSize / 2.0) * gridSpace); z <= ((gridSize / 2.0) * gridSpace); z += gridSpace) {
+            CC3MeshNode *teapot = [[CC3ModelSampleFactory factory] makeUniColoredTeapotNamed:@"RobotLightTeapot" withColor:ccc4f(1.0, 1.0, 1.0, 1.0)];
+            teapot.uniformScale = 10.0;
+            [self addChild:teapot];
+            teapot.location = cc3v(x, 2.0, z);
+            [teapot addShadowVolumesForLight:(CC3Light *)[self getNodeNamed:@"Lamp"]];
+        }
+    }
+}
+
+- (void)addTeapotsForLightsWithParent:(CCNode *)parentNode
+{
+    for (CCNode *node in parentNode.children) {
+        if ([node isKindOfClass:CC3Light.class]) {
+            CC3Light *light = (CC3Light *)node;
+            CC3MeshNode *lightMarker = [[CC3ModelSampleFactory factory] makeUniColoredTeapotNamed:@"RobotLightTeapot" withColor:CCC4FFromColorAndOpacity(light.color, 0.5)];
+            lightMarker.uniformScale = 3.0;
+            lightMarker.rotation = light.forwardDirection;
+            [light addChild:lightMarker];
+            [lightMarker addAxesDirectionMarkers];
+        }
+        [self addTeapotsForLightsWithParent:node];
+    }
+}
 
 #pragma mark - Update Custom Activity
 
