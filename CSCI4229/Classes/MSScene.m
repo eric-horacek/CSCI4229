@@ -29,8 +29,6 @@
 @property (nonatomic, assign) CC3Vector cameraStartDirection;
 @property (nonatomic, strong) CC3Node *boom;
 
-@property (nonatomic, strong) CC3Light *lamp;
-
 - (void)addGround;
 - (void)addRobot;
 - (void)addCameraBoom;
@@ -52,17 +50,10 @@
 
 - (void)initializeScene
 {
-    self.ambientLight = CCC4FMake(0.5, 0.5, 0.5, 0.3);
+    self.ambientLight = CCC4FMake(0.0, 0.0, 0.0, 0.3);
     
 	CC3Camera* camera = [CC3Camera nodeWithName: @"Camera"];
     [self addChild:camera];
-    
-	self.lamp = [CC3Light nodeWithName: @"Lamp"];
-    self.lamp.location = cc3v(0.0, 10.0, 0.0);;
-    self.lamp.attenuationCoefficients = CC3AttenuationCoefficientsMake(0.2, 0.1, 0.001);
-	self.lamp.isDirectionalOnly = NO;
-    self.lamp.shadowIntensityFactor = 0.75f;
-    [self addChild:self.lamp];
     
     [self addGround];
     [self addCameraBoom];
@@ -117,15 +108,14 @@
 {
     self.ground = [CC3PlaneNode nodeWithName:@"Ground"];
     
-    CGFloat gridSize = 10.0;
-    CGFloat gridSpace = 1.0;
+    CGFloat gridTotalSize = 25.0;
     
     [self.ground populateAsCenteredRectangleWithSize:CGSizeMake(0.001, 0.001)];
     
-    for (CGFloat x = -((gridSize / 2.0) * gridSpace); x <= ((gridSize / 2.0) * gridSpace); x += gridSpace) {
-        for (CGFloat z = -((gridSize / 2.0) * gridSpace); z <= ((gridSize / 2.0) * gridSpace); z += gridSpace) {
+    for (CGFloat x = -(gridTotalSize / 2.0); x <= (gridTotalSize / 2.0); x += 1.0) {
+        for (CGFloat z = -(gridTotalSize / 2.0); z <= (gridTotalSize / 2.0); z += 1.0) {
             CC3PlaneNode *groundSegment = [CC3PlaneNode nodeWithName:[NSString stringWithFormat:@"%f-%f", x, z]];
-            [groundSegment populateAsRectangleWithSize:CGSizeMake((gridSize/gridSpace), (gridSize/gridSpace)) andRelativeOrigin:CGPointMake(x, z) andTessellation:ccg(32, 32)];
+            [groundSegment populateAsRectangleWithSize:CGSizeMake(10.0, 10.0) andRelativeOrigin:CGPointMake(x, z) andTessellation:ccg(32, 32)];
             groundSegment.color = ccGRAY;
             groundSegment.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
             [groundSegment repeatTexture: (ccTex2F){1.0, 1.0}];
@@ -160,17 +150,24 @@
     [self addChild:self.robot];
     
     // Add a light to illuminate everything in front of the robot with a red glow;
-    CC3Light *robotFrontLight = [CC3Light nodeWithName: @"RobotFrontLight"];
+    CC3Light *robotFrontLight = [CC3Light nodeWithName:@"RobotFrontLight"];
 	robotFrontLight.isDirectionalOnly = NO;
-    robotFrontLight.diffuseColor = CCC4FMake(0.8, 0.0, 0.0, 1.0);
-    robotFrontLight.specularColor = CCC4FMake(0.8, 0.0, 0.0, 1.0);
+    robotFrontLight.diffuseColor = CCC4FMake(1.0, 0.0, 0.0, 1.0);
+    robotFrontLight.specularColor = CCC4FMake(1.0, 0.0, 0.0, 1.0);
     robotFrontLight.shadowIntensityFactor = 0.75f;
 	robotFrontLight.spotCutoffAngle = 50.0;
-    robotFrontLight.forwardDirection = cc3v(0.0, 0.0, 1.0);
+    robotFrontLight.forwardDirection = cc3v(0.0, -0.5, 1.0);
 	robotFrontLight.attenuationCoefficients = CC3AttenuationCoefficientsMake(0.0, 0.3, 0.01);
     
     [self.robot addChild:robotFrontLight];
     robotFrontLight.location = cc3v(0.0, 1.9, 1.4);
+    
+    CC3Light *robotTopLight = [CC3Light nodeWithName:@"RobotTopLight"];
+    robotTopLight.location = cc3v(0.0, 8.0, 0.0);;
+    robotTopLight.attenuationCoefficients = CC3AttenuationCoefficientsMake(0.2, 0.1, 0.001);
+	robotTopLight.isDirectionalOnly = NO;
+    robotTopLight.shadowIntensityFactor = 0.75f;
+    [self.robot addChild:robotTopLight];
     
 #if defined(DEBUG3D)
 	self.robot.shouldDrawWireframeBox = YES;
@@ -187,6 +184,15 @@
         [self addContentFromPODFile: @"Tree.pod" withName:treeName];
         
         CC3MeshNode *tree = (CC3MeshNode*)[self getNodeNamed:treeName];
+        
+        CC3MeshNode *treeTrunk = (CC3MeshNode*)[tree getNodeNamed:@"tree-submesh0"];
+        treeTrunk.color = ccc3(76.0, 38.0, 0.0);
+        treeTrunk.material.shininess = 16.0;
+        
+        CC3MeshNode *treeLeaves = (CC3MeshNode*)[tree getNodeNamed:@"tree-submesh1"];
+        treeLeaves.color = ccc3(64.0, 128.0, 0.0);
+        treeLeaves.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
+        [treeLeaves repeatTexture: (ccTex2F){1.0, 1.0}];
         
         tree.location = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
         
