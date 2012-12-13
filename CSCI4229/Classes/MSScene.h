@@ -8,18 +8,14 @@
 
 
 #import "CC3Scene.h"
+#import "MSTouchReceptor.h"
 
 @class MSRobot;
 
-@interface MSScene : CC3Scene
+@interface MSScene : CC3Scene <MSTouchReceptor>
 
 @property (nonatomic, strong) CC3PlaneNode* ground;
 @property (nonatomic, strong) MSRobot* robot;
-
-- (void)startDraggingAt:(CGPoint)touchPoint;
-- (void)dragBy:(CGPoint)movement atVelocity:(CGPoint)velocity;
-- (void)stopDragging;
-
 
 - (NSArray *)walkableAdjacentTilesCoordForTileCoord:(CGPoint)tileCoord;
 

@@ -26,18 +26,17 @@
 #import "MSRobot.h"
 #import "MSShortestPathHelpers.h"
 
+#import "MSCameraBoom.h"
+
 //#define DEBUG3D
 #define TREE_COUNT 20
 
 @interface MSScene ()
 
-@property (nonatomic, assign) CC3Vector cameraStartDirection;
-@property (nonatomic, strong) CC3Node *boom;
 @property (nonatomic, strong) NSArray *treeTiles;
 
 - (void)addGround;
 - (void)addRobot;
-- (void)addCameraBoom;
 - (void)addForest;
 - (void)addSky;
 
@@ -55,21 +54,17 @@
     self.ambientLight = CCC4FMake(0.05, 0.05, 0.1, 0.1);
 //    self.ambientLight = CCC4FMake(1.0, 1.0, 1.0, 0.7);
     
-	CC3Camera* camera = [CC3Camera nodeWithName: @"Camera"];
-    [self addChild:camera];
-    
     [self addGround];
-    [self addCameraBoom];
+//    [self addCameraBoom];
     [self addForest];
     [self addRobot];
     [self addSky];
     
-    self.robot.boom = self.boom;
+//    self.robot.boom = self.boom;
 
-    #if defined(DEBUG3D)
-        [self addTeapotsForLightsWithParent:(CCNode *)self];
-        [self addExampleLandscape];
-    #endif
+#if defined(DEBUG3D)
+    [self addTeapotsForLightsWithParent:(CCNode *)self];
+#endif
 	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
@@ -100,9 +95,8 @@
 
 - (void)onOpen
 {
-    self.cameraStartDirection = CC3VectorMake(-1.0, 1.0, 0.0);
-    [self.activeCamera moveToShowAllOf:self.robot fromDirection:self.cameraStartDirection withPadding:3.0];
-    [self.boom addChild:self.activeCamera];
+    self.activeCamera = self.robot.cameraBoom.camera;
+    [self.robot.cameraBoom setupCamera];
 }
 
 - (void) onClose
@@ -159,14 +153,12 @@
 
 - (void)addRobot
 {
-    self.robot = [[MSRobot alloc] initWithName:@"Robot"];
-    [self addChild:self.robot];
-    [self.robot addShadows];
+    self.robot = [[MSRobot alloc] initWithName:@"Robot" parent:self];
     
-    #if defined(DEBUG3D)
-        self.robot.shouldDrawWireframeBox = YES;
-        [self.robot addAxesDirectionMarkers];
-    #endif
+#if defined(DEBUG3D)
+    self.robot.shouldDrawWireframeBox = YES;
+    [self.robot addAxesDirectionMarkers];
+#endif
 }
 
 - (void)addForest
@@ -226,13 +218,6 @@
         [self addChild:plane];
     }
     #endif
-}
-
-- (void)addCameraBoom
-{
-    self.boom = [[CC3Node alloc] initWithName:@"Boom"];
-    self.boom.location = CC3VectorAdd(self.robot.globalCenterOfGeometry, CC3VectorMake(0.0, 0.0, 0.0));
-    [self addChild:self.boom];
 }
 
 - (void)addExampleLandscape
@@ -304,6 +289,7 @@
 {
     if (node == self.robot) {
         NSLog(@"Touched my robot");
+        [self.robot toggleCameras];
     }
     else if (node == self.ground) {
         NSLog(@"Touched my ground");
@@ -311,36 +297,34 @@
     }
 }
 
-- (void)startDraggingAt:(CGPoint)touchPoint
+- (void)dragStartedAtPoint:(CGPoint)touchPoint
 {
-    self.cameraStartDirection = self.boom.rotation;
+    [self.robot dragStartedAtPoint:touchPoint];
 }
 
-- (void)dragBy:(CGPoint)movement atVelocity:(CGPoint)velocity
-{    
-    CC3Vector cameraDirection = self.cameraStartDirection;
-    
-    // Scale the pan rotation vector by 180, so that a pan across the entire screen
-    // results in a 180 degree pan of the camera
-    CGPoint panRotation = ccpMult(movement, 180.0);
-	cameraDirection.y -= panRotation.x;
-    cameraDirection.z += panRotation.y;
-    
-    // Prevent from viewing the robot upside down
-	if (cameraDirection.z < -45.0) {
-        cameraDirection.z = -45.0;
-    }
-    // Prevent from viewing the robot from underground
-    else if (cameraDirection.z > 45.0) {
-        cameraDirection.z = 45.0;
-    }
-    
-    self.boom.rotation = cameraDirection;
+- (void)dragMoved:(CGPoint)movement withVelocity:(CGPoint)velocity
+{
+    [self.robot dragMoved:movement withVelocity:velocity];
 }
 
-- (void)stopDragging
+- (void)dragEnded
 {
-    
+    [self.robot dragEnded];
+}
+
+- (void)pinchStarted
+{
+    [self.robot pinchStarted];
+}
+
+- (void)pinchChangedScale:(CGFloat)aScale withVelocity:(CGFloat)aVelocity
+{
+    [self.robot pinchChangedScale:aScale withVelocity:aVelocity];
+}
+
+- (void)pinchEnded
+{
+    [self.robot pinchStarted];
 }
 
 - (void)touchGroundAt:(CGPoint)touchPoint
