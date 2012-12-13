@@ -161,12 +161,13 @@
         
         CC3MeshNode *treeTrunk = (CC3MeshNode*)[tree getNodeNamed:@"tree-submesh0"];
         treeTrunk.color = ccc3(76.0, 38.0, 0.0);
-        treeTrunk.material.shininess = 16.0;
+        treeTrunk.material.shininess = 128.0;
+        treeTrunk.material.specularColor = CCC4FMake(0.0, 0.0, 0.0, 0.0);
         
         CC3MeshNode *treeLeaves = (CC3MeshNode*)[tree getNodeNamed:@"tree-submesh1"];
         treeLeaves.color = ccc3(64.0, 128.0, 0.0);
-        treeLeaves.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
-        [treeLeaves repeatTexture: (ccTex2F){1.0, 1.0}];
+        treeLeaves.material.shininess = 128.0;
+        treeLeaves.material.specularColor = CCC4FMake(0.0, 0.0, 0.0, 0.0);
         
         CC3Vector treeTileLocation = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
     
