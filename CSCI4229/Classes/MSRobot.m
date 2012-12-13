@@ -391,7 +391,7 @@
 	[self.shortestPath removeObjectAtIndex:0];
     
 	// Play actions
-    [self runAction:[CC3RotateToLookAt actionWithDuration:0.3 targetLocation:destination]];
+    [self runAction:[CC3RotateToLookAt actionWithDuration:0.5 targetLocation:destination]];
 	[self runAction:[CCSequence actions:moveAction, moveCallback, nil]];
     [self.cameraBoom runAction:[CC3MoveTo actionWithDuration:walkDuration moveTo:locationForTile(s.position)]];
 }

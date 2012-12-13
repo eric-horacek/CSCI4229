@@ -111,7 +111,7 @@
     sky.shouldCullFrontFaces = YES;
 	sky.location = cc3v(0, 0, 0);
     sky.shouldUseLighting = YES;
-    sky.emissionColor = CCC4FMake(0.1, 0.1, 0.2, 0.3);
+    sky.emissionColor = CCC4FMake(0.12, 0.12, 0.16, 0.3);
     
     sky.texture = [CC3Texture textureFromFile:@"stars.jpg"];
     [sky repeatTexture: (ccTex2F){16.0, 16.0}];
