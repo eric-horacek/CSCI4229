@@ -61,11 +61,11 @@
         self.shortestPathOpenSteps = nil;
         self.shortestPath = nil;
         
-        self.velocity = 6.0;
+        self.velocity = 12.0;
         
         // Animations
         
-        CCActionInterval *walk = [CC3Animate actionWithDuration:0.5];
+        CCActionInterval *walk = [CC3Animate actionWithDuration:0.25];
         self.walkAction = [CCRepeatForever actionWithAction:walk];
         
         // Camera
@@ -134,12 +134,12 @@
         
         self.togglingCamera = YES;
         
+        [self removeShadows];
         [self.scene addChild:self.transitionCamera];
         
         self.transitionCamera.location = self.firstPersonCamera.globalLocation;
         self.transitionCamera.rotation = self.firstPersonCamera.globalRotation;
         
-        [self removeShadows];
         self.scene.activeCamera = self.transitionCamera;
         
         id moveCallback = [CCCallFunc actionWithTarget:self selector:@selector(setActiveCameraToBoomCamera)];
@@ -151,12 +151,12 @@
         
         self.togglingCamera = YES;
         
+        [self removeShadows];
         [self.scene addChild:self.transitionCamera];
         
         self.transitionCamera.location = self.cameraBoom.camera.globalLocation;
         self.transitionCamera.rotation = self.cameraBoom.camera.globalRotation;
         
-        [self removeShadows];
         self.scene.activeCamera = self.transitionCamera;
         
         id moveCallback = [CCCallFunc actionWithTarget:self selector:@selector(setActiveCameraToFirstPersonCamera)];
@@ -177,7 +177,6 @@
 {
     self.scene.activeCamera = self.firstPersonCamera;
     self.togglingCamera = NO;
-//    [self addShadows];
 }
 
 - (void)rotateFirstPersonCameraToForward
