@@ -21,6 +21,8 @@
 		912087BB167950F90038976E /* MSShortestPathStep.m in Sources */ = {isa = PBXBuildFile; fileRef = 912087BA167950F90038976E /* MSShortestPathStep.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		912087BE167958520038976E /* MSShortestPathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 912087BD167958520038976E /* MSShortestPathHelpers.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		91AC9017167A89FD00D5DBF7 /* Tree.pod in Resources */ = {isa = PBXBuildFile; fileRef = 91AC9016167A89FD00D5DBF7 /* Tree.pod */; };
+		91AC9035167A906600D5DBF7 /* stars.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 91AC9034167A906600D5DBF7 /* stars.jpg */; };
+		91AC9038167A90E200D5DBF7 /* grass.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 91AC9037167A90E200D5DBF7 /* grass.jpg */; };
 		91B0F2591678EC3400647DE6 /* MSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A11678EC3400647DE6 /* MSAppDelegate.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		91B0F25A1678EC3400647DE6 /* MSLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A31678EC3400647DE6 /* MSLayer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		91B0F25B1678EC3400647DE6 /* MSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A51678EC3400647DE6 /* MSScene.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -115,7 +117,6 @@
 		91B0F2B41678EC3400647DE6 /* CC3TargettingNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F1741678EC3400647DE6 /* CC3TargettingNode.m */; };
 		91B0F2B51678EC3400647DE6 /* CC3VertexArrayMeshModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F1761678EC3400647DE6 /* CC3VertexArrayMeshModel.m */; };
 		91B0F2B61678EC3400647DE6 /* CC3World.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F1781678EC3400647DE6 /* CC3World.m */; };
-		91B0F2B71678EC3400647DE6 /* Grass.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 91B0F17B1678EC3400647DE6 /* Grass.jpg */; };
 		91B0F2B81678EC3400647DE6 /* CCAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F17F1678EC3400647DE6 /* CCAction.m */; };
 		91B0F2B91678EC3400647DE6 /* CCActionCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F1811678EC3400647DE6 /* CCActionCamera.m */; };
 		91B0F2BA1678EC3400647DE6 /* CCActionEase.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F1831678EC3400647DE6 /* CCActionEase.m */; };
@@ -239,6 +240,8 @@
 		912087BC167958450038976E /* MSShortestPathHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSShortestPathHelpers.h; sourceTree = "<group>"; };
 		912087BD167958520038976E /* MSShortestPathHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSShortestPathHelpers.m; sourceTree = "<group>"; };
 		91AC9016167A89FD00D5DBF7 /* Tree.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tree.pod; sourceTree = "<group>"; };
+		91AC9034167A906600D5DBF7 /* stars.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = stars.jpg; sourceTree = "<group>"; };
+		91AC9037167A90E200D5DBF7 /* grass.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = grass.jpg; sourceTree = "<group>"; };
 		91B0F0A01678EC3400647DE6 /* MSAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAppDelegate.h; sourceTree = "<group>"; };
 		91B0F0A11678EC3400647DE6 /* MSAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAppDelegate.m; sourceTree = "<group>"; };
 		91B0F0A21678EC3400647DE6 /* MSLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSLayer.h; sourceTree = "<group>"; };
@@ -440,7 +443,6 @@
 		91B0F1781678EC3400647DE6 /* CC3World.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CC3World.m; sourceTree = "<group>"; };
 		91B0F1791678EC3400647DE6 /* CCNodeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNodeController.h; sourceTree = "<group>"; };
 		91B0F17A1678EC3400647DE6 /* ControllableCCLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControllableCCLayer.h; sourceTree = "<group>"; };
-		91B0F17B1678EC3400647DE6 /* Grass.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Grass.jpg; path = ../Grass.jpg; sourceTree = "<group>"; };
 		91B0F17E1678EC3400647DE6 /* CCAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAction.h; sourceTree = "<group>"; };
 		91B0F17F1678EC3400647DE6 /* CCAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAction.m; sourceTree = "<group>"; };
 		91B0F1801678EC3400647DE6 /* CCActionCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionCamera.h; sourceTree = "<group>"; };
@@ -1369,7 +1371,8 @@
 		91B0F33A1678ED7500647DE6 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
-				91B0F17B1678EC3400647DE6 /* Grass.jpg */,
+				91AC9034167A906600D5DBF7 /* stars.jpg */,
+				91AC9037167A90E200D5DBF7 /* grass.jpg */,
 				3A5EF96C1678FC760029BB6A /* fire.png */,
 			);
 			name = Textures;
@@ -1443,7 +1446,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				91B0F26E1678EC3400647DE6 /* PVRT_Removed_Files.txt in Resources */,
-				91B0F2B71678EC3400647DE6 /* Grass.jpg in Resources */,
 				91B0F3191678EC3400647DE6 /* fps_images.png in Resources */,
 				91B0F3231678EC3400647DE6 /* Robot.pod in Resources */,
 				91B0F3301678ED4400647DE6 /* Icon-72.png in Resources */,
@@ -1459,6 +1461,8 @@
 				3A3E1D001678F8F7006FD145 /* Default-568h@2x.png in Resources */,
 				3A5EF96D1678FC760029BB6A /* fire.png in Resources */,
 				91AC9017167A89FD00D5DBF7 /* Tree.pod in Resources */,
+				91AC9035167A906600D5DBF7 /* stars.jpg in Resources */,
+				91AC9038167A90E200D5DBF7 /* grass.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

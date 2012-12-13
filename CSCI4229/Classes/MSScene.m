@@ -27,6 +27,7 @@
 #import "MSShortestPathHelpers.h"
 
 //#define DEBUG3D
+#define TREE_COUNT 20
 
 @interface MSScene ()
 
@@ -38,6 +39,7 @@
 - (void)addRobot;
 - (void)addCameraBoom;
 - (void)addForest;
+- (void)addSky;
 
 - (void)addTeapotsForLightsWithParent:(CCNode *)parentNode;
 - (void)addExampleLandscape;
@@ -50,7 +52,8 @@
 
 - (void)initializeScene
 {
-    self.ambientLight = CCC4FMake(0.0, 0.0, 0.0, 0.3);
+    self.ambientLight = CCC4FMake(0.05, 0.05, 0.1, 0.1);
+//    self.ambientLight = CCC4FMake(1.0, 1.0, 1.0, 0.7);
     
 	CC3Camera* camera = [CC3Camera nodeWithName: @"Camera"];
     [self addChild:camera];
@@ -59,6 +62,7 @@
     [self addCameraBoom];
     [self addForest];
     [self addRobot];
+    [self addSky];
     
     self.robot.boom = self.boom;
 
@@ -108,6 +112,23 @@
 
 #pragma mark - Object Addition Methods
 
+- (void)addSky
+{
+    CC3MeshNode *sky = [CC3MeshNode nodeWithName:@"Sky"];
+	[sky populateAsSphereWithRadius: 100.0f andTessellation: ccg(16, 16)];
+	sky.color = ccWHITE;
+    sky.shouldCullBackFaces = NO;
+    sky.shouldCullFrontFaces = YES;
+	sky.location = cc3v(0, 0, 0);
+    sky.shouldUseLighting = YES;
+    sky.emissionColor = CCC4FMake(0.1, 0.1, 0.2, 0.3);
+    
+    sky.texture = [CC3Texture textureFromFile:@"stars.jpg"];
+    [sky repeatTexture: (ccTex2F){16.0, 16.0}];
+    
+    [self addChild:sky];
+}
+
 - (void)addGround
 {
     self.ground = [CC3PlaneNode nodeWithName:@"Ground"];
@@ -121,7 +142,7 @@
             CC3PlaneNode *groundSegment = [CC3PlaneNode nodeWithName:[NSString stringWithFormat:@"%f-%f", x, z]];
             [groundSegment populateAsRectangleWithSize:CGSizeMake(10.0, 10.0) andRelativeOrigin:CGPointMake(x, z) andTessellation:ccg(16, 16)];
             groundSegment.color = ccGRAY;
-            groundSegment.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
+            groundSegment.texture = [CC3Texture textureFromFile:@"grass.jpg"];
             [groundSegment repeatTexture: (ccTex2F){1.0, 1.0}];
             [self.ground addChild:groundSegment];
         }
@@ -151,7 +172,7 @@
 - (void)addForest
 {
     NSMutableArray *mutableTreeTiles = [[NSMutableArray alloc] init];
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < TREE_COUNT; i++) {
         
         NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
         
@@ -438,7 +459,7 @@
 
 - (void)checkForCollisions
 {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < TREE_COUNT; i++) {
         NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
         CC3Node *tree = [self getNodeNamed:treeName];
         
