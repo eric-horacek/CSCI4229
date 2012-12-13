@@ -20,8 +20,6 @@
 
 @interface MSRobot ()
 
-@property (nonatomic, assign) BOOL avoiding;
-
 @property (nonatomic, strong) NSMutableArray *shortestPathOpenSteps;
 @property (nonatomic, strong) NSMutableArray *shortestPathClosedSteps;
 @property (nonatomic, strong) NSMutableArray *shortestPath;
@@ -49,8 +47,7 @@
         [self.mesh translateBy:CC3VectorMake(1.7, 1.0, -0.7)];
     
         self.isTouchEnabled = YES;
-        self.avoiding = NO;
-        
+    
         self.shortestPathClosedSteps = nil;
         self.shortestPathOpenSteps = nil;
         self.shortestPath = nil;
@@ -79,7 +76,6 @@
         self.topLight.isDirectionalOnly = NO;
         self.topLight.shadowIntensityFactor = 0.75f;
         [self addChild:self.topLight];
-        
 	}
 	return self;
 }
@@ -100,34 +96,33 @@
 
 - (void)navigateToward:(CC3Vector)target {
     
-    // Get current tile coordinate and desired tile coord
-    CGPoint fromTileCoord = tileForLocation(self.location);
-    CGPoint toTileCoord = tileForLocation(target);
+    CGPoint sourceTile = tileForLocation(self.location);
+    CGPoint destinationTile = tileForLocation(target);
     
-    if (!validTile(fromTileCoord)) {
+    if (!validTile(sourceTile)) {
         NSLog(@"Current location not on a valid tile!");
         return;
     }
     
-    if (!validTile(toTileCoord)) {
+    if (!validTile(destinationTile)) {
         NSLog(@"Destination location not on a valid tile!");
         return;
     }
     
-    // Check that there is a path to compute ;-)
-    if (CGPointEqualToPoint(fromTileCoord, toTileCoord)) {
-        NSLog(@"You're already there!");
+    // Check that there is a path to compute
+    if (CGPointEqualToPoint(sourceTile, destinationTile)) {
+        NSLog(@"You are already there!");
         return;
     }
     
-    NSLog(@"From: %@", NSStringFromCGPoint(fromTileCoord));
-    NSLog(@"To: %@", NSStringFromCGPoint(toTileCoord));
+    NSLog(@"From: %@", NSStringFromCGPoint(sourceTile));
+    NSLog(@"To: %@", NSStringFromCGPoint(destinationTile));
     
     self.shortestPathOpenSteps = [[NSMutableArray alloc] init];
     self.shortestPathClosedSteps = [[NSMutableArray alloc] init];
     
     // Start by adding the from position to the open list
-    [self insertInOpenSteps:[[MSShortestPathStep alloc] initWithPosition:fromTileCoord]];
+    [self insertInOpenSteps:[[MSShortestPathStep alloc] initWithPosition:sourceTile]];
     
     do {
         // Get the lowest F cost step
@@ -140,7 +135,7 @@
         [self.shortestPathOpenSteps removeObjectAtIndex:0];
         
         // If the currentStep is the desired tile coordinate, we are done!
-        if (CGPointEqualToPoint(currentStep.position, toTileCoord)) {
+        if (CGPointEqualToPoint(currentStep.position, destinationTile)) {
             [self constructPathAndStartAnimationFromStep:currentStep];
             break;
         }
@@ -161,7 +156,8 @@
             // Check if the step is already in the open list
             NSUInteger index = [self.shortestPathOpenSteps indexOfObject:step];
             
-            if (index == NSNotFound) { // Not on the open list, so add it
+            // Not on the open list, so add it
+            if (index == NSNotFound) {
                 
                 // Set the current step as the parent
                 step.parent = currentStep;
@@ -170,14 +166,16 @@
                 step.gScore = currentStep.gScore + moveCost;
                 
                 // Compute the H score which is the estimated movement cost to move from that step to the desired tile coordinate
-                step.hScore = [self computeHScoreFromCoord:step.position toCoord:toTileCoord];
+                step.hScore = [self computeHScoreFromCoord:step.position toCoord:destinationTile];
                 
                 // Adding it with the function which is preserving the list ordered by F score
                 [self insertInOpenSteps:step];
             }
-            else { // Already in the open list
+            // Already in the open list
+            else {
                 
-                step = [self.shortestPathOpenSteps objectAtIndex:index]; // To retrieve the old one (which has its scores already computed ;-)
+                // Retrieve the old one (which has its scores already computed)
+                step = [self.shortestPathOpenSteps objectAtIndex:index];
                 
                 // Check to see if the G score for that step is lower if we use the current step to get there
                 if ((currentStep.gScore + moveCost) < step.gScore) {
@@ -188,7 +186,6 @@
                     // Because the G Score has changed, the F score may have changed too
                     // So to keep the open list ordered we have to remove the step, and re-insert it with
                     // the insert function which is preserving the list ordered by F score
-                    
                     [self.shortestPathOpenSteps removeObjectAtIndex:index];
                     
                     // Re-insert it with the function which is preserving the list ordered by F score
@@ -199,22 +196,24 @@
         
     } while ([self.shortestPathOpenSteps count] > 0);
     
-    if (self.shortestPath == nil) { // No path found
-        NSLog(@"NO PATH HAS BEEN FOUND");
+    if (self.shortestPath == nil) {
+        NSLog(@"No path found");
     }
     
 }
 
 # pragma mark - Shortest Path Helpers
 
-// Insert a path step (ShortestPathStep) in the ordered open steps list (shortestPathOpenSteps)
+// Insert a path step in the ordered open steps list
 - (void)insertInOpenSteps:(MSShortestPathStep *)step
 {
-	int stepFScore = [step fScore]; // Compute the step's F score
+    // Compute the step's F score
+	int stepFScore = [step fScore];
 	int count = [self.shortestPathOpenSteps count];
 	int i = 0; // This will be the index at which we will insert the step
 	for (; i < count; i++) {
-		if (stepFScore <= [[self.shortestPathOpenSteps objectAtIndex:i] fScore]) { // If the step's F score is lower or equals to the step at index i
+		if (stepFScore <= [[self.shortestPathOpenSteps objectAtIndex:i] fScore]) {
+            // If the step's F score is lower or equals to the step at index i
 			// Then we found the index at which we have to insert the new step
             // Basically we want the list sorted by F score
 			break;
@@ -224,7 +223,7 @@
 	[self.shortestPathOpenSteps insertObject:step atIndex:i];
 }
 
-// Compute the H score from a position to another (from the current position to the final desired position
+// Compute the H score from a position to another (from the current position to the final desired position)
 - (int)computeHScoreFromCoord:(CGPoint)fromCoord toCoord:(CGPoint)toCoord
 {
 	// Here we use the Manhattan method, which calculates the total number of step moved horizontally and vertically to reach the
@@ -247,15 +246,19 @@
 	self.shortestPath = [NSMutableArray array];
     
 	do {
-		if (step.parent != nil) { // Don't add the last step which is the start position (remember we go backward, so the last one is the origin position ;-)
-			[self.shortestPath insertObject:step atIndex:0]; // Always insert at index 0 to reverse the path
+		if (step.parent != nil) {
+			// Don't add the last step which is the start position
+            // Always insert at index 0 to reverse the path
+            [self.shortestPath insertObject:step atIndex:0];
 		}
-		step = step.parent; // Go backward
-	} while (step != nil); // Until there is no more parents
+        // Go backward
+		step = step.parent;
+	} while (step != nil);
     
     for (MSShortestPathStep *s in self.shortestPath) {
         NSLog(@"%@", s);
     }
+    
     [self runAction:self.walkAction];
     [self popStepAndAnimate];
 }
@@ -279,7 +282,8 @@
 
 	// Prepare the action and the callback
     id moveAction = [CC3MoveTo actionWithDuration:walkDuration moveTo:destination];
-	id moveCallback = [CCCallFunc actionWithTarget:self selector:@selector(popStepAndAnimate)]; // set the method itself as the callback
+    // Set the method itself as the callback
+	id moveCallback = [CCCallFunc actionWithTarget:self selector:@selector(popStepAndAnimate)];
     
 	// Remove the step
 	[self.shortestPath removeObjectAtIndex:0];
