@@ -17,6 +17,7 @@
 @property (nonatomic, assign) CGFloat velocity;
 @property (nonatomic, strong) CC3Light *topLight;
 
+- (void)navigateToward:(CC3Vector)target;
 - (void)moveToward:(CC3Vector)target;
 - (void)addShadows;
 

@@ -46,7 +46,7 @@
         // Rotate the model to display properly in world
         [self.mesh rotateByAngle:97.0 aroundAxis:CC3VectorMake(1.0, 0.0, 0.0)];
         [self.mesh rotateByAngle:-90.0 aroundAxis:CC3VectorMake(0.0, 1.0, 0.0)];
-        [self.mesh translateBy:CC3VectorMake(1.7, 1.2, -0.7)];
+        [self.mesh translateBy:CC3VectorMake(1.7, 1.0, -0.7)];
     
         self.isTouchEnabled = YES;
         self.avoiding = NO;
@@ -89,7 +89,16 @@
     [self.mesh addShadowVolumesForLight:self.topLight];
 }
 
-- (void)moveToward:(CC3Vector)target {
+- (void)moveToward:(CC3Vector)target
+{
+    [self stopAllActions];
+    [self.boom stopAllActions];
+    self.shortestPath = [@[[[MSShortestPathStep alloc] initWithPosition:tileFractionForLocation(target)]] mutableCopy];
+    [self runAction:self.walkAction];
+    [self popStepAndAnimate];
+}
+
+- (void)navigateToward:(CC3Vector)target {
     
     // Get current tile coordinate and desired tile coord
     CGPoint fromTileCoord = tileForLocation(self.location);
@@ -107,16 +116,9 @@
     
     // Check that there is a path to compute ;-)
     if (CGPointEqualToPoint(fromTileCoord, toTileCoord)) {
-        NSLog(@"You're already there! :P");
+        NSLog(@"You're already there!");
         return;
     }
-    
-    // Must check that the desired location is walkable
-    // In our case it's really easy, because only wall are unwalkable
-    //    if ([_layer isWallAtTileCoord:toTileCoord]) {
-    //        [[SimpleAudioEngine sharedEngine] playEffect:@"hitWall.wav"];
-    //        return;
-    //    }
     
     NSLog(@"From: %@", NSStringFromCGPoint(fromTileCoord));
     NSLog(@"To: %@", NSStringFromCGPoint(toTileCoord));

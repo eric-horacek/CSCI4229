@@ -9,8 +9,18 @@
 #import "MSShortestPathHelpers.m"
 #import "CC3VertexArrays.h"
 
-#define TILE_WIDTH 5
-#define TILE_COUNT 20
+#define TILE_WIDTH 4
+#define TILE_COUNT 375
+
+int tileWidth()
+{
+    return TILE_WIDTH;
+}
+
+int tileCount()
+{
+    return TILE_COUNT;
+}
 
 BOOL validTile(CGPoint tile)
 {
@@ -39,6 +49,14 @@ CGPoint tileForLocation(CC3Vector location)
     point.y /= TILE_WIDTH;
     point.y = floorf(point.y);
     
+    return point;
+}
+
+CGPoint tileFractionForLocation(CC3Vector location)
+{
+    CGPoint point = CGPointMake(location.x + (TILE_WIDTH*TILE_COUNT)/2, location.z + (TILE_WIDTH*TILE_COUNT)/2);
+    point.x /= TILE_WIDTH;
+    point.y /= TILE_WIDTH;
     return point;
 }
 

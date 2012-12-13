@@ -32,6 +32,7 @@
 
 @property (nonatomic, assign) CC3Vector cameraStartDirection;
 @property (nonatomic, strong) CC3Node *boom;
+@property (nonatomic, strong) NSArray *treeTiles;
 
 - (void)addGround;
 - (void)addRobot;
@@ -149,6 +150,7 @@
 
 - (void)addForest
 {
+    NSMutableArray *mutableTreeTiles = [[NSMutableArray alloc] init];
     for (int i = 0; i < 10; i++) {
         
         NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
@@ -166,17 +168,42 @@
         treeLeaves.texture = [CC3Texture textureFromFile:@"Grass.jpg"];
         [treeLeaves repeatTexture: (ccTex2F){1.0, 1.0}];
         
-        tree.location = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
-        tree.isTouchEnabled = YES;
+        CC3Vector treeTileLocation = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
     
+        CGPoint treeTile = tileForLocation(treeTileLocation);
+        CC3Vector treeLocation = locationForTile(treeTile);
+        
+        tree.location = treeLocation;
+        tree.isTouchEnabled = YES;
+            
         // This causes EXTREME lag (to the point of not rendering any frames), not sure why
         // [tree addShadowVolumesForLight:(CC3Light *)[self.robot getNodeNamed:@"RobotTopLight"]];
+        
+        [mutableTreeTiles addObject:[NSValue valueWithCGPoint:treeTile]];
 
         #if defined(DEBUG3D)
-            tree.shouldDrawWireframeBox = YES;
+        tree.shouldDrawWireframeBox = YES;
         #endif
     }
+    self.treeTiles = [mutableTreeTiles copy];
+    
+    #if defined(DEBUG3D)
+    for (NSValue *value in self.treeTiles) {
+        CGPoint point = [value CGPointValue];
 
+        CC3PlaneNode *plane = [CC3PlaneNode nodeWithName:[NSString stringWithFormat:@"%d", rand()]];
+        [plane populateAsCenteredRectangleWithSize:CGSizeMake(tileWidth(), tileWidth())];
+
+        plane.rotation = cc3v(-90.0, 180.0, 0.0);
+        CC3Vector newLocation = locationForTile(point);
+        newLocation.y = 0.1;
+        plane.location = newLocation;
+
+        plane.color = ccGRAY;
+        plane.shouldCullBackFaces = NO;
+        [self addChild:plane];
+    }
+    #endif
 }
 
 - (void)addCameraBoom
@@ -300,9 +327,23 @@
 	CC3Vector4 touchLoc = [self.activeCamera unprojectPoint:touchPoint ontoPlane:groundPlane];
     
 	// Make sure the projected touch is in front of the camera, not behind it
-	if (touchLoc.w > 0.0) {
-		[self addExplosionAt:touchLoc];
-        [self.robot moveToward:CC3VectorFromTruncatedCC3Vector4(touchLoc)];
+	if (touchLoc.w > 0.0) {        
+        CC3Vector destinationLocation = CC3VectorFromTruncatedCC3Vector4(touchLoc);
+        CGPoint destinationTile = tileForLocation(destinationLocation);
+        if ([self isTreeTile:destinationTile]) {
+            NSLog(@"That's a tree tile! We don't want to go there!");
+        } else if (!validTile(destinationTile)) {
+            NSLog(@"That's not a valid tile! We don't want to go there!");
+        } else if (CC3VectorDistance(self.robot.location, destinationLocation) > 50){
+            NSLog(@"That's too far away! We don't want to go there!");
+        } else if (![self treeTileBetweenSource:self.robot.location andTarget:destinationLocation]) {
+            NSLog(@"No need to calculate shortest path! Here we go!");
+            [self addExplosionAt:touchLoc];
+            [self.robot moveToward:destinationLocation];
+        } else {
+            [self addExplosionAt:touchLoc];
+            [self.robot navigateToward:destinationLocation];
+        }
 	}
 }
 
@@ -317,14 +358,14 @@
 	// once it is exhausted.
 	CCParticleSystem* emitter = [CCParticleFire node];
 	emitter.position = ccp(0.0, 0.0);
-	emitter.duration = 0.75;
+	emitter.duration = 0.2;
 	emitter.autoRemoveOnFinish = YES;
     
 	// Create the 3D billboard node to hold the 2D particle emitter.
 	// The bounding volume is removed so that the flames will not be culled as the
 	// camera pans away from the flames. This is suitable since the particle system
 	// only exists for a short duration.
-	CC3ParticleSystemBillboard* bb = [CC3ParticleSystemBillboard nodeWithName:@"EXPLOSION" withBillboard:emitter];
+	CC3ParticleSystemBillboard* bb = [CC3ParticleSystemBillboard nodeWithName:@"Explosion" withBillboard:emitter];
 	
 	// A billboard can be drawn either as part of the 3D scene, or as an overlay
 	// above the 3D scene. By commenting out one of the following sections of code,
@@ -413,37 +454,103 @@
 
 - (NSArray *)walkableAdjacentTilesCoordForTileCoord:(CGPoint)tileCoord
 {
-    NSArray *points = @[[NSValue valueWithCGPoint:CGPointMake(tileCoord.x, tileCoord.y - 1)],
-                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x - 1, tileCoord.y)],
-                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x, tileCoord.y + 1)],
-                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x + 1, tileCoord.y)],
-                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x - 1, tileCoord.y - 1)],
-                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x - 1, tileCoord.y + 1)],
-                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x + 1, tileCoord.y - 1)],
-                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x + 1, tileCoord.y + 1)],
-    ];
+	NSMutableArray *tmp = [NSMutableArray arrayWithCapacity:8];
     
-    NSMutableArray *cleanPoints = [points mutableCopy];
+    BOOL t = NO;
+    BOOL l = NO;
+    BOOL b = NO;
+    BOOL r = NO;
     
-    for (int i = 0; i < 10; i++) {
-        NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
-        CC3Node *tree = [self getNodeNamed:treeName];
-        BOOL dirty = NO;
-        points = [cleanPoints copy];
-        for (NSValue *value in points) {
-            CGPoint p = [value CGPointValue];
-            if (!validTile(p)) {
-                [cleanPoints removeObject:value];
-            } else if (tileContainsLocation(p, tree.location)) {
-                [cleanPoints removeObject:value];
-                dirty = YES;
-            }
-            break;
-        }
-        if (dirty) break;
-    }
-    return [NSArray arrayWithArray:cleanPoints];
+	// Top
+	CGPoint p = CGPointMake(tileCoord.x, tileCoord.y - 1);
+	if (validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+        t = YES;
+	}
+    
+	// Left
+	p = CGPointMake(tileCoord.x - 1, tileCoord.y);
+	if (validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+        l = YES;
+	}
+    
+	// Bottom
+	p = CGPointMake(tileCoord.x, tileCoord.y + 1);
+	if (validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+        b = YES;
+	}
+    
+	// Right
+	p = CGPointMake(tileCoord.x + 1, tileCoord.y);
+	if (validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+        r = YES;
+	}
+    
+    
+	// Top Left
+	p = CGPointMake(tileCoord.x - 1, tileCoord.y - 1);
+	if (t && l && validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+	}
+    
+	// Bottom Left
+	p = CGPointMake(tileCoord.x - 1, tileCoord.y + 1);
+	if (b && l && validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+	}
+    
+	// Top Right
+	p = CGPointMake(tileCoord.x + 1, tileCoord.y - 1);
+	if (t && r && validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+	}
+    
+	// Bottom Right
+	p = CGPointMake(tileCoord.x + 1, tileCoord.y + 1);
+	if (b && r && validTile(p) && ![self isTreeTile:p]) {
+		[tmp addObject:[NSValue valueWithCGPoint:p]];
+	}
+    
+    
+	return [NSArray arrayWithArray:tmp];
 }
 
+- (BOOL)treeTileBetweenSource:(CC3Vector)source andTarget:(CC3Vector)target
+{
+    CC3Ray sourceRay = CC3RayFromLocDir(source, CC3VectorDifference(target, source));
+    CC3Ray destinationRay = CC3RayFromLocDir(target, CC3VectorDifference(source, target));
+    
+    for (NSValue *value in self.treeTiles) {
+        CGPoint point = [value CGPointValue];
+        CC3Vector boxLocation = locationForTile(point);
+        
+        CC3BoundingBox boundingBox = CC3BoundingBoxMake(boxLocation.x - tileWidth(),
+                                                        -5.0,
+                                                        boxLocation.z - tileWidth(),
+                                                        boxLocation.x + tileWidth(),
+                                                        5.0,
+                                                        boxLocation.z + tileWidth());
+        
+        if (!CC3VectorIsNull(CC3RayIntersectionOfBoundingBox(sourceRay, boundingBox)) &&
+            !CC3VectorIsNull(CC3RayIntersectionOfBoundingBox(destinationRay, boundingBox))) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (BOOL)isTreeTile:(CGPoint)tile
+{
+    for (NSValue *value in self.treeTiles) {
+        CGPoint point = [value CGPointValue];
+        if (CGPointEqualToPoint(point, tile)) {
+            return YES;
+        }
+    }
+    return NO;
+}
 
 @end
