@@ -74,7 +74,7 @@
         
         self.firstPersonCamera = [CC3Camera nodeWithName:@"RobotFirstPersonCamera"];
         [self addChild:self.firstPersonCamera];
-        self.firstPersonCamera.location = cc3v(0.0, 1.9, 1.6);
+        self.firstPersonCamera.location = cc3v(0.0, 2.5, 1.5);
         self.firstPersonCamera.forwardDirection = cc3v(0.0, 0.0, 1.0);
 
         self.transitionCamera = [CC3Camera nodeWithName:@"RobotTransitionCamera"];
