@@ -18,13 +18,6 @@
 	CC3DeviceCameraOverlayUIViewController *viewController;
 }
 
-- (void)dealloc
-{
-	[window release];
-	[viewController release];
-	[super dealloc];
-}
-
 - (void)applicationDidFinishLaunching:(UIApplication*)application
 {
 	// Establish the type of CCDirector to use.

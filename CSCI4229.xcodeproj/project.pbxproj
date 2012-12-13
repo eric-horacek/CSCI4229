@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3A3E1D001678F8F7006FD145 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A3E1CFF1678F8F7006FD145 /* Default-568h@2x.png */; };
 		3A5EF96D1678FC760029BB6A /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A5EF96C1678FC760029BB6A /* fire.png */; };
+		911D0DD016796C5800EA5C9F /* MSRobot.m in Sources */ = {isa = PBXBuildFile; fileRef = 912087B316793F5F0038976E /* MSRobot.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		91203CBB16782B29004DC51F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBA16782B29004DC51F /* QuartzCore.framework */; };
 		91203CBD16782B29004DC51F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBC16782B29004DC51F /* OpenGLES.framework */; };
 		91203CBF16782B29004DC51F /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CBE16782B29004DC51F /* OpenAL.framework */; };
@@ -18,9 +19,11 @@
 		91203CC716782B29004DC51F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CC616782B29004DC51F /* Foundation.framework */; };
 		91203CC916782B29004DC51F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91203CC816782B29004DC51F /* CoreGraphics.framework */; };
 		912087A5167911600038976E /* Tree.pod in Resources */ = {isa = PBXBuildFile; fileRef = 912087A4167911600038976E /* Tree.pod */; };
-		91B0F2591678EC3400647DE6 /* MSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A11678EC3400647DE6 /* MSAppDelegate.m */; };
-		91B0F25A1678EC3400647DE6 /* MSLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A31678EC3400647DE6 /* MSLayer.m */; };
-		91B0F25B1678EC3400647DE6 /* MSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A51678EC3400647DE6 /* MSScene.m */; };
+		912087BB167950F90038976E /* MSShortestPathStep.m in Sources */ = {isa = PBXBuildFile; fileRef = 912087BA167950F90038976E /* MSShortestPathStep.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		912087BE167958520038976E /* MSShortestPathHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 912087BD167958520038976E /* MSShortestPathHelpers.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		91B0F2591678EC3400647DE6 /* MSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A11678EC3400647DE6 /* MSAppDelegate.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		91B0F25A1678EC3400647DE6 /* MSLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A31678EC3400647DE6 /* MSLayer.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		91B0F25B1678EC3400647DE6 /* MSScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A51678EC3400647DE6 /* MSScene.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		91B0F25C1678EC3400647DE6 /* CC3MeshParticleSamples.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0A91678EC3400647DE6 /* CC3MeshParticleSamples.m */; };
 		91B0F25D1678EC3400647DE6 /* CC3ModelSampleFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0AB1678EC3400647DE6 /* CC3ModelSampleFactory.m */; };
 		91B0F25E1678EC3400647DE6 /* CC3ParticleSamples.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B0F0AD1678EC3400647DE6 /* CC3ParticleSamples.m */; };
@@ -230,6 +233,12 @@
 		91203CC616782B29004DC51F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		91203CC816782B29004DC51F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		912087A4167911600038976E /* Tree.pod */ = {isa = PBXFileReference; lastKnownFileType = file; path = Tree.pod; sourceTree = "<group>"; };
+		912087B216793F5F0038976E /* MSRobot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSRobot.h; sourceTree = "<group>"; };
+		912087B316793F5F0038976E /* MSRobot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSRobot.m; sourceTree = "<group>"; };
+		912087B9167950F90038976E /* MSShortestPathStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSShortestPathStep.h; sourceTree = "<group>"; };
+		912087BA167950F90038976E /* MSShortestPathStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSShortestPathStep.m; sourceTree = "<group>"; };
+		912087BC167958450038976E /* MSShortestPathHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSShortestPathHelpers.h; sourceTree = "<group>"; };
+		912087BD167958520038976E /* MSShortestPathHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSShortestPathHelpers.m; sourceTree = "<group>"; };
 		91B0F0A01678EC3400647DE6 /* MSAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAppDelegate.h; sourceTree = "<group>"; };
 		91B0F0A11678EC3400647DE6 /* MSAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAppDelegate.m; sourceTree = "<group>"; };
 		91B0F0A21678EC3400647DE6 /* MSLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSLayer.h; sourceTree = "<group>"; };
@@ -712,6 +721,12 @@
 				91B0F0A31678EC3400647DE6 /* MSLayer.m */,
 				91B0F0A41678EC3400647DE6 /* MSScene.h */,
 				91B0F0A51678EC3400647DE6 /* MSScene.m */,
+				912087B216793F5F0038976E /* MSRobot.h */,
+				912087B316793F5F0038976E /* MSRobot.m */,
+				912087B9167950F90038976E /* MSShortestPathStep.h */,
+				912087BA167950F90038976E /* MSShortestPathStep.m */,
+				912087BC167958450038976E /* MSShortestPathHelpers.h */,
+				912087BD167958520038976E /* MSShortestPathHelpers.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1454,6 +1469,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				911D0DD016796C5800EA5C9F /* MSRobot.m in Sources */,
 				91B0F2591678EC3400647DE6 /* MSAppDelegate.m in Sources */,
 				91B0F25A1678EC3400647DE6 /* MSLayer.m in Sources */,
 				91B0F25B1678EC3400647DE6 /* MSScene.m in Sources */,
@@ -1637,6 +1653,8 @@
 				91B0F30F1678EC3400647DE6 /* ZAttributedString.m in Sources */,
 				91B0F3101678EC3400647DE6 /* ZFont.m in Sources */,
 				91B0F3141678EC3400647DE6 /* main.m in Sources */,
+				912087BB167950F90038976E /* MSShortestPathStep.m in Sources */,
+				912087BE167958520038976E /* MSShortestPathHelpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

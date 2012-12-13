@@ -9,14 +9,18 @@
 
 #import "CC3Scene.h"
 
+@class MSRobot;
+
 @interface MSScene : CC3Scene
 
 @property (nonatomic, strong) CC3PlaneNode* ground;
-@property (nonatomic, strong) CC3Node* robot;
-@property (nonatomic, strong) CC3MeshNode* robotMesh;
+@property (nonatomic, strong) MSRobot* robot;
 
 - (void)startDraggingAt:(CGPoint)touchPoint;
 - (void)dragBy:(CGPoint)movement atVelocity:(CGPoint)velocity;
 - (void)stopDragging;
+
+
+- (NSArray *)walkableAdjacentTilesCoordForTileCoord:(CGPoint)tileCoord;
 
 @end

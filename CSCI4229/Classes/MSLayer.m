@@ -18,11 +18,6 @@
     return (MSScene*) cc3Scene;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-}
-
 //
 // Override to set up your 2D controls and other initial state.
 //
@@ -49,14 +44,12 @@
 	tapSelector.numberOfTapsRequired = 1;
 	tapSelector.cancelsTouchesInView = NO; // Ensures touches are passed to buttons
 	[self cc3AddGestureRecognizer: tapSelector];
-	[tapSelector release];
     
     // Register for single-finger dragging gestures used to rotate the camera
 	UIPanGestureRecognizer* dragPanner = [[UIPanGestureRecognizer alloc] initWithTarget: self action: @selector(handleDrag:)];
 	dragPanner.minimumNumberOfTouches = 1;
 	dragPanner.maximumNumberOfTouches = 1;
 	[self cc3AddGestureRecognizer: dragPanner];
-    [dragPanner release];
 }
 
 
@@ -99,5 +92,6 @@
 - (void)onCloseCC3Layer
 {
 }
+
 
 @end

@@ -20,8 +20,12 @@
 #import "CCParticleExamples.h"
 #import "CC3ShadowVolumes.h"
 #import "CC3VertexArrays.h"
+#import "CC3BoundingVolumes.h"
 
-#define DEBUG3D
+#import "MSRobot.h"
+#import "MSShortestPathHelpers.h"
+
+//#define DEBUG3D
 
 @interface MSScene ()
 
@@ -31,18 +35,13 @@
 - (void)addGround;
 - (void)addRobot;
 - (void)addCameraBoom;
-- (void)addForrest;
+- (void)addForest;
 
 @end
 
 @implementation MSScene
 
 #pragma mark - Scene Lifecycle
-
-- (void)dealloc
-{
-	[super dealloc];
-}
 
 - (void)initializeScene
 {
@@ -63,7 +62,9 @@
     [self addRobot];
     [self addGround];
     [self addCameraBoom];
-    [self addForrest];
+    [self addForest];
+    
+    self.robot.boom = self.boom;
 	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
@@ -84,6 +85,8 @@
 	// Displays bounding boxes around all nodes. The bounding box for each node
 	// will encompass its child nodes.
     // self.shouldDrawAllWireframeBoxes = YES;
+    // self.shouldDrawAllBoundingVolumes = YES;
+    // self.shouldLogIntersections = YES;
 	
 	// If you encounter issues creating and adding nodes, or loading models from
 	// files, the following line is used to log the full structure of the scene.
@@ -122,18 +125,7 @@
 
 - (void)addRobot
 {
-    [self addContentFromPODFile: @"Robot.pod" withName:@"RobotMesh"];
-    
-    self.robotMesh = (CC3MeshNode*)[self getNodeNamed: @"RobotMesh"];
-    self.robot = [[CC3Node alloc] initWithName:@"Robot"];
-    [self.robot addChild:self.robotMesh];
-    
-    // Rotate the model to display properly in world
-    [self.robotMesh rotateByAngle:97.0 aroundAxis:CC3VectorMake(1.0, 0.0, 0.0)];
-    [self.robotMesh rotateByAngle:-90.0 aroundAxis:CC3VectorMake(0.0, 1.0, 0.0)];
-    [self.robotMesh translateBy:CC3VectorMake(1.7, 1.2, -0.7)];
-    
-    [self.robot setIsTouchEnabled:YES];
+    self.robot = [[MSRobot alloc] initWithName:@"Robot"];
     [self addChild:self.robot];
     
 #if defined(DEBUG3D)
@@ -141,18 +133,19 @@
 #endif
 }
 
-- (void)addForrest
+- (void)addForest
 {
     for (int i = 0; i < 10; i++) {
         
         NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
         
-        [self addContentFromPODFile: @"Tree.pod" withName:treeName];
+        [self addContentFromPODFile:@"Tree.pod" withName:treeName];
         
         CC3MeshNode *tree = (CC3MeshNode*)[self getNodeNamed:treeName];
         
         tree.location = CC3VectorMake(rand() % 100 + 5, 0, rand() % 100 + 5);
-        
+        tree.isTouchEnabled = YES;
+    
         #if defined(DEBUG3D)
             tree.shouldDrawWireframeBox = YES;
         #endif
@@ -191,6 +184,7 @@
 // For more info, read the notes of this method on CC3Node.
 //
 - (void)updateAfterTransform:(CC3NodeUpdatingVisitor*)visitor {
+    [self checkForCollisions];
 	// If you have uncommented the moveWithDuration: invocation in the onOpen: method,
 	// you can uncomment the following to track how the camera moves, and where it ends up,
 	// in order to determine where to position the camera to see the entire scene.
@@ -206,10 +200,10 @@
 - (void)nodeSelected:(CC3Node*)node byTouchEvent:(uint)touchType at:(CGPoint)touchPoint
 {
     if (node == self.robot) {
-        NSLog(@"touched my robot");
+        NSLog(@"Touched my robot");
     }
     else if (node == self.ground) {
-        NSLog(@"touched my ground");
+        NSLog(@"Touched my ground");
         [self touchGroundAt:touchPoint];
     }
 }
@@ -254,26 +248,8 @@
 	// Make sure the projected touch is in front of the camera, not behind it
 	if (touchLoc.w > 0.0) {
 		[self addExplosionAt:touchLoc];
-        [self moveRobotTo:touchLoc];
+        [self.robot moveToward:CC3VectorFromTruncatedCC3Vector4(touchLoc)];
 	}
-}
-
-- (void)moveRobotTo:(CC3Vector4)destination
-{
-    [self.robot stopAllActions];
-    [self.boom stopAllActions];
-    [self.robotMesh stopAllActions];
-    
-    CGFloat distance = CC3VectorDistance(self.robot.location, CC3VectorFromTruncatedCC3Vector4(destination));
-    CGFloat robotVelocity = 10.0;
-    CGFloat walkDuration = ceilf(distance / robotVelocity);
-    
-    [self.robot runAction:[CC3RotateToLookAt actionWithDuration:0.3 targetLocation:CC3VectorFromTruncatedCC3Vector4(destination)]];
-    [self.robot runAction:[CC3MoveTo actionWithDuration:walkDuration moveTo:CC3VectorFromTruncatedCC3Vector4(destination)]];
-    [self.boom runAction:[CC3MoveTo actionWithDuration:walkDuration moveTo:CC3VectorFromTruncatedCC3Vector4(destination)]];
-
-    CCActionInterval *walk = [CC3Animate actionWithDuration:0.5];
-    [self.robotMesh runAction:[CCRepeat actionWithAction:walk times:walkDuration * 2]];
 }
 
 /**
@@ -360,5 +336,59 @@
     //	bb.unityScaleDistance = 180.0;
     //	[aNode addChild: bb];
 }
+
+#pragma mark - Collision Detection
+
+- (void)checkForCollisions
+{
+    for (int i = 0; i < 10; i++) {
+        NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
+        CC3Node *tree = [self getNodeNamed:treeName];
+        
+        CC3Node *treeNode = [tree getNodeNamed:@"tree-submesh0"];
+        CC3Node *robotNode = [self.robot getNodeNamed:@"Cube_001-submesh0"];
+    
+        if ([robotNode doesIntersectNode:treeNode]) {
+            // A collision has occured!
+        }
+    }
+}
+
+# pragma mark - Shortest Path Helpers
+
+- (NSArray *)walkableAdjacentTilesCoordForTileCoord:(CGPoint)tileCoord
+{
+    NSArray *points = @[[NSValue valueWithCGPoint:CGPointMake(tileCoord.x, tileCoord.y - 1)],
+                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x - 1, tileCoord.y)],
+                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x, tileCoord.y + 1)],
+                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x + 1, tileCoord.y)],
+                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x - 1, tileCoord.y - 1)],
+                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x - 1, tileCoord.y + 1)],
+                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x + 1, tileCoord.y - 1)],
+                        [NSValue valueWithCGPoint:CGPointMake(tileCoord.x + 1, tileCoord.y + 1)],
+    ];
+    
+    NSMutableArray *cleanPoints = [points mutableCopy];
+    
+    for (int i = 0; i < 10; i++) {
+        NSString *treeName = [NSString stringWithFormat:@"Tree_%d", i];
+        CC3Node *tree = [self getNodeNamed:treeName];
+        BOOL dirty = NO;
+        points = [cleanPoints copy];
+        for (NSValue *value in points) {
+            CGPoint p = [value CGPointValue];
+            if (!validTile(p)) {
+                [cleanPoints removeObject:value];
+            } else if (tileContainsLocation(p, tree.location)) {
+                [cleanPoints removeObject:value];
+                dirty = YES;
+            }
+            break;
+        }
+        if (dirty) break;
+    }
+    return [NSArray arrayWithArray:cleanPoints];
+}
+
 
 @end
