@@ -61,11 +61,11 @@
         self.shortestPathOpenSteps = nil;
         self.shortestPath = nil;
         
-        self.velocity = 12.0;
+        self.velocity = 6.0;
         
         // Animations
         
-        CCActionInterval *walk = [CC3Animate actionWithDuration:0.25];
+        CCActionInterval *walk = [CC3Animate actionWithDuration:0.5];
         self.walkAction = [CCRepeatForever actionWithAction:walk];
         
         // Camera
