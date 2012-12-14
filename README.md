@@ -4,6 +4,10 @@ Semester Project for Willem Schreuder's **CSCI 4229 Computer Graphics** Class
 
 By **Eric Horacek** and **Devon Tivona**
 
+##Overview
+
+Meet Bug. He is a little robot who has been dropped in the middle of a very dark and spooky forest. He is attracted to fire, so tap anywhere on the ground to make a spark and he will chase after it. He also doesn't like bumping his head into trees, so he navigates around them to avoid damaging his circuits.
+
 ##Dependencies & Setup
 
 This is an Xcode Project, so it must be compiled on a system running Mac OSX with an install of Xcode that has an iOS SDK of 5.0 or greater. This project uses the [Cocos3D](http://http://brenwill.com/cocos3d/) plugin for the [Cocos2D](http://www.cocos2d-iphone.org) framework, both of which are included in the project. These frameworks are thin wrappers around OpenGL ES 2.0 that allow us to write graphics code in Objective-C, automatically load models from .POD files, and establish dependence hierarchies between graphics objects.
@@ -12,7 +16,7 @@ This project uses **CocoaPods** to manage its dependencies. You must have the `p
 
 ##Building & Running
 
-After you set up the project using the `pod` ruby gem, open the `CSCI4229.xcworkspace` in Xcode, and then build and run the CSCI4229 target using `command-R`.
+After you set up the project using the `pod` ruby gem, open the `CSCI4229.xcworkspace` in Xcode, and then build and run the CSCI4229 target using `Command-R`.
 
 ##Navigation Paradigm
 
